@@ -20,14 +20,14 @@ serverSend.bind((IP_ADDRESS, PORT_SEND))
 serverRecv.listen(1000)
 serverSend.listen(1000)
 
-listclients = []
-listGroup = []
+listClients = []
+publicGroups = ['public']
 
 try:
    while True:
         client = Client(serverRecv.accept(),serverSend.accept())
-        listclients.append(client)
-        client.setEnv(listclients,listGroup)
+        listClients.append(client)
+        client.setEnv(listClients,publicGroups)
         client.start()
         #print(listclients)
 except KeyboardInterrupt:

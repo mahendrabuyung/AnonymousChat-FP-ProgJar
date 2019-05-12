@@ -8,7 +8,7 @@ MAX_BUFFER = 2048
 
 class Client(threading.Thread):
     listfriends = []
-    listgroups = []
+    publicGroups = []
     
     def __init__(self,socketRecv,socketSend):
         self.connectionRecv = socketRecv[0]
@@ -20,17 +20,20 @@ class Client(threading.Thread):
         self.messageTime = ""
         self.messageLast = ""
         self.messageNow = ""
-        self.group = []
+        self.myGroups = []
     
     def setAkun(self,name):
         self.name = name
     
+    def addGroup(self,group):
+        self.myGroups.append(group)
+
     def getAkun(self,name):
         return [self.name,self.index]
     
-    def setEnv(self,friends = [],listgroups = []):
+    def setEnv(self,friends = [],Groups = []):
         self.listfriends = friends
-        self.listgroups  = listgroups
+        self.publicGroups  = Groups
     
     def sendMessage(self,message):
         try:
@@ -57,6 +60,7 @@ class Client(threading.Thread):
                 self.message = message
                 print("-------------------------new send")
                 print(message)
+                print(self.publicGroups)
                 self.broadcast(message)
                 print("--done--")
             except:
@@ -64,23 +68,38 @@ class Client(threading.Thread):
                 del self
                 return 
                 
+    
+    def ReplyRequest(self,request):
+        content = request.content
+        if(request.kode == 100):
+            self.name = content['name']
+        elif(request.kode == 102):
+            self.listgroups.append(content['groupadded'])
+        elif(request.kode == 103):
+            self.listgroups.remove(content['groupadded'])
+        elif(request.kode == 201):
+            self.broadcast('tes')
 
-    def broadcast(self,messege):
+    def broadcast(self,messege,toGroup='public'):
+        #bugging------------------
         print(self.listfriends)
         newResponse = Res.Response(211)
-        newResponse.content({'message':'kukembalikan '+messege})
-        for i in self.listfriends:
-            if i.is_alive():
-                if i == self : 
-                    print('self')
-                    newResponse.content['messege'] = 'ping'
-                    i.sendMessage(newResponse.encode())
-                else :
-                    print('other')
-                    i.sendMessage(newResponse.encode())
+        newResponse.content({'message':'kukembalikan '+messege,"toGroup":toGroup})
+
+        for friend in self.listfriends:
+            if friend.is_alive():
+                if toGroup in self.publicGroups or toGroup in friend.myGroup:
+                    if friend == self :
+                        print('self')
+                        newResponse.content['messege'] = 'ping'
+                        friend.sendMessage(newResponse.encode())
+                    else :
+                        print('other')
+                        friend.sendMessage(newResponse.encode())
         print("-------------------------end send")
     
     def __del__(self):
-        print (self.address," dropped")
+        print (self.addressRecv," dropped")
+        print (self.addressSend," dropped")
         return
     
