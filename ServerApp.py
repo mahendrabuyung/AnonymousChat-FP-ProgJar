@@ -4,25 +4,31 @@ import os
 from Client import Client
 from threading import Thread
 
-server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+serverSend = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverRecv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+serverSend.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+serverRecv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-PORT_CHAT = 3000
+PORT_RECV = 3000
+PORT_SEND = 3010
 IP_ADDRESS = '127.0.0.1'
 MAX_BUFFER = 2048
 
-server_socket.bind((IP_ADDRESS, PORT_CHAT))
-server_socket.listen(1000)
+serverRecv.bind((IP_ADDRESS, PORT_RECV))
+serverSend.bind((IP_ADDRESS, PORT_SEND))
 
-A = 11
+serverRecv.listen(1000)
+serverSend.listen(1000)
+
 listclients = []
+listGroup = []
+
 try:
    while True:
-        client = Client(server_socket.accept())
+        client = Client(serverRecv.accept(),serverSend.accept())
         listclients.append(client)
-        client.setfriends(listclients)
+        client.setEnv(listclients,listGroup)
         client.start()
-        print(listclients)
-
+        #print(listclients)
 except KeyboardInterrupt:
     print("KeyboardInterrupt has been caught.")

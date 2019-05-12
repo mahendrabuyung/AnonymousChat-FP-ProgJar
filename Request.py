@@ -1,23 +1,22 @@
 import pickle
 
-CREATE_GROUP  = 102
-DESTROY_GROUP = 103
-SEND_MESSAGE  = 201
-SEND_FILE     = 202
+#request Kode
+INITIATILION_REQUEST  = 100
+CREATE_GROUP_REQUEST  = 102
+DESTROY_GROUP_REQUEST = 103
+SEND_MESSAGE_REQUEST  = 201
+SEND_FILE_REQUEST     = 202
+DESTROY_REQUEST       = 500
 
 class Request :
     def __init__(self,kode=201):
         self.kode = kode
     
-    def content(self.message,file=None):
-        if(file==None):
-            self.message = message
-        else :
-            self.message = message
-            self.file = file
-    def save(self):
-        return pickle.dumps(self)
-    def load(self):
-        return pickle.loads(self)
+    def content(self,content):
+        self.content = content
 
-p = Request
+    def encode(self):
+        return pickle.dumps(self)
+
+def decode(object):
+    return pickle.loads(object)
