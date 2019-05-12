@@ -13,7 +13,11 @@ PORT_RECV = 3010
 PORT_SEND = 3000
 MAX_BUFFER = 2048
 
-USER_NAME = "Anonymous"
+#-----------User Default 
+USER_NAME = "Anonymous" #defaule username
+USER_FTP  = "" 
+TOKEN_FTP  = "" 
+LIST_GROUP = []
 
 serverSend.connect((IP_ADDRESS,PORT_SEND))
 serverRecv.connect((IP_ADDRESS,PORT_RECV))
@@ -36,16 +40,8 @@ def sendForever():
         order = reqQueue.get()
         serverSend.sendall(order)
 
-recv = threading.Thread(target=recvForever)
-send = threading.Thread(target=sendForever)
-
-recv.start()
-send.start()
-#recv.join()
-#send.join()
-
-
-def initialization(name="Anonymous",pic=None):
+#-----------------------Send Request----------------#
+def register(name="Anonymous",pic=None):
     request = Req.Request(100)
     content = {}
     USER_NAME = name
@@ -95,9 +91,41 @@ def sendFile(file,message=None,toGroup='public',info=None):
     request.content = content
     return request.encode()
 
+#-----------------------Recaive Response----------------#
+def initialization(response):
+    USER_FTP =  response.content['ftpUser']
+    TOKEN_FTP = response.content['ftpToken']
+
+def Update(response):
+    USER_NAME  = response.content['name']
+    LIST_GROUP = response.content['listgroups']
+    USER_FTP   = response.content['ftpUser']
+    TOKEN_FTP  = response.content['ftpToken']
+
+def message_response(reponse):
+    sender  = response.content['sender']
+    message = response.content['message']
+    toGroup = response.content['toGroup']
+
+def file_response(reponse):
+    sender  = response.content['sender']
+    message = response.content['message']
+    file    = response.content['file']
+    toGroup = response.content['toGroup']
 
 
-reqQueue.put(initialization('Sora'))
+
+
+
+recv = threading.Thread(target=recvForever)#getEveryResponse
+send = threading.Thread(target=sendForever)#sendEveryResponse
+
+recv.start() 
+send.start() 
+#recv.join()
+#send.join()
+
+reqQueue.put(register('Sora'))
 
 while True:
     raw = str(input())
