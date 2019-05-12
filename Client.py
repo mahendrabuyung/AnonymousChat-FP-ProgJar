@@ -1,27 +1,29 @@
 import threading
 from random import randint
 from datetime import datetime
-
 MAX_BUFFER = 2048
 
 class Client(threading.Thread):
-    val = randint(1,1000)
-    messageRecv = ""
-    messageTime = ""
-    messageLast = ""
-    messageNow = ""
-    idle = False
+    listfriends = []
     
-
     def __init__(self,socket_accept):
         self.connection = socket_accept[0]
         self.address = socket_accept[1]
-        self._stop_event = threading.Event()
         threading.Thread.__init__(self)
+        self.messageRecv = ""
+        self.messageTime = ""
+        self.messageLast = ""
+        self.messageNow = ""
+        self.group = []
     
-    def setAkun(self,name,index):
+    def setAkun(self,name):
         self.name = name
-        self.index = index
+    
+    def setfriends(self,friends):
+        self.listfriends = friends
+
+    def tambahGroup(self, name):
+        self.group.append(name)
 
     def getAkun(self,name):
         return [self.name,self.index]
@@ -47,14 +49,24 @@ class Client(threading.Thread):
             try:
                 print("--run--")
                 message = self.connection.recv(2048)
-                self.messageRecv = message.decode()
+                self.messageLast = message.decode()
                 self.messageNow = message.decode()
-                self.sendMessage('masuk')
+                print(self.getMessageLast())
+                print(self.listfriends)
+                self.sendMessage(self.getMessageLast())
+                self.broadcast(self.getMessageLast())
                 
                 print("--done--")
             except:
                 del self
                 return
 
+    def broadcast(self,messega):
+        for i in self.listfriends:
+            if i.is_alive() == True :
+                i.sendMessage(messagee)
+                print('send done to ',i.address)
+    
     def __del__(self):
         print (self.address," dropped")
+    

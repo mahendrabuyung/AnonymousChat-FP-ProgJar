@@ -7,7 +7,7 @@ MAX_BUFFER = 2048
 
 server_socket.connect((IP_ADDRESS,PORT_CHAT))
 while True:
-    mes = input()
+    mes = str(input())
     server_socket.sendall(mes.encode())
     m = server_socket.recv(1024)
     print(m.decode())

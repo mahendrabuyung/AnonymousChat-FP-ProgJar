@@ -18,6 +18,6 @@ class Request :
     def save(self):
         return pickle.dumps(self)
     def load(self):
-        retrun pickle.loads(self)
+        return pickle.loads(self)
 
 p = Request

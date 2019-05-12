@@ -14,27 +14,15 @@ MAX_BUFFER = 2048
 server_socket.bind((IP_ADDRESS, PORT_CHAT))
 server_socket.listen(1000)
 
-clientsGroup = {}
-index = 0
-a = []
+A = 11
+listclients = []
 try:
-
-    #while True:
-        print(a)
-        p = Client(server_socket.accept())
-        a.append(p)
-        print(a)
-        p.start()
-        #p.join()
-        while p.is_alive():
-            print ('------------')
-            print(p.getMessageLast())
-            print(p.getMessageNow())
-            print ('------------')
-        
-        print(a)
-
-        #del p
+   while True:
+        client = Client(server_socket.accept())
+        listclients.append(client)
+        client.setfriends(listclients)
+        client.start()
+        print(listclients)
 
 except KeyboardInterrupt:
     print("KeyboardInterrupt has been caught.")
