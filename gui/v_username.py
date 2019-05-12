@@ -1,65 +1,122 @@
-from Tkinter import *
+import sys
 
-class Placeholder_State(object):
-     __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'with_placeholder'
+try:
+    import Tkinter as tk
+except ImportError:
+    import tkinter as tk
 
-def add_placeholder_to(entry, placeholder, color="grey", font=None):
-    normal_color = entry.cget("fg")
-    normal_font = entry.cget("font")
-    
-    if font is None:
-        font = normal_font
+try:
+    import ttk
+    py3 = False
+except ImportError:
+    import tkinter.ttk as ttk
+    py3 = True
 
-    state = Placeholder_State()
-    state.normal_color=normal_color
-    state.normal_font=normal_font
-    state.placeholder_color=color
-    state.placeholder_font=font
-    state.placeholder_text = placeholder
-    state.with_placeholder=True
+import v_username_support
 
-    def on_focusin(event, entry=entry, state=state):
-        if state.with_placeholder:
-            entry.delete(0, "end")
-            entry.config(fg = state.normal_color, font=state.normal_font)
-        
-            state.with_placeholder = False
+def vp_start_gui():
+    '''Starting point when module is the main routine.'''
+    global val, w, root
+    root = tk.Tk()
+    top = Box___Take_a_Username (root)
+    v_username_support.init(root, top)
+    root.mainloop()
 
-    def on_focusout(event, entry=entry, state=state):
-        if entry.get() == '':
-            entry.insert(0, state.placeholder_text)
-            entry.config(fg = state.placeholder_color, font=state.placeholder_font)
-            
-            state.with_placeholder = True
+w = None
+def create_Box___Take_a_Username(root, *args, **kwargs):
+    '''Starting point when module is imported by another program.'''
+    global w, w_win, rt
+    rt = root
+    w = tk.Toplevel (root)
+    top = Box___Take_a_Username (w)
+    v_username_support.init(w, top, *args, **kwargs)
+    return (w, top)
 
-    entry.insert(0, placeholder)
-    entry.config(fg = color, font=font)
+def destroy_Box___Take_a_Username():
+    global w
+    w.destroy()
+    w = None
 
-    entry.bind('<FocusIn>', on_focusin, add="+")
-    entry.bind('<FocusOut>', on_focusout, add="+")
-    
-    entry.placeholder_state = state
+class Box___Take_a_Username:
+    def __init__(self, top=None):
+        '''This class configures and populates the toplevel window.
+           top is the toplevel containing window.'''
+        _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
+        _fgcolor = '#000000'  # X11 color: 'black'
+        _compcolor = '#d9d9d9' # X11 color: 'gray85'
+        _ana1color = '#d9d9d9' # X11 color: 'gray85'
+        _ana2color = '#ececec' # Closest X11 color: 'gray92'
 
-    return state
+        top.geometry("352x182+443+159")
+        top.title("Anonymous Chat")
+        top.configure(background="#00ff00")
+        top.configure(highlightbackground="#d9d9d9")
+        top.configure(highlightcolor="black")
 
-userWindow = Tk()
-userWindow.geometry('300x160')
-userWindow.title("Anonymous Chat")
-userWindow.resizable(False, False) 
+        self.FrameBox = tk.Frame(top)
+        self.FrameBox.place(relx=0.028, rely=0.082, relheight=0.852
+                , relwidth=0.923)
+        self.FrameBox.configure(relief='groove')
+        self.FrameBox.configure(borderwidth="2")
+        self.FrameBox.configure(relief="groove")
+        self.FrameBox.configure(background="#00ff00")
+        self.FrameBox.configure(highlightbackground="#d9d9d9")
+        self.FrameBox.configure(highlightcolor="black")
+        self.FrameBox.configure(width=325)
 
-frame = Frame(userWindow, bg='green')
-frame.place(relx=0, rely=0, relwidth=1, relheight=1)
+        self.Take_a_Username = tk.LabelFrame(self.FrameBox)
+        self.Take_a_Username.place(relx=0.046, rely=0.097, relheight=0.613
+                , relwidth=0.892)
+        self.Take_a_Username.configure(relief='groove')
+        self.Take_a_Username.configure(foreground="black")
+        self.Take_a_Username.configure(text='''Take a Username:''')
+        self.Take_a_Username.configure(background="#00ff00")
+        self.Take_a_Username.configure(highlightbackground="#d9d9d9")
+        self.Take_a_Username.configure(highlightcolor="black")
+        self.Take_a_Username.configure(width=290)
+
+        self.Entry1 = tk.Entry(self.Take_a_Username)
+        self.Entry1.place(relx=0.052, rely=0.368, height=33, relwidth=0.879
+                , bordermode='ignore')
+        self.Entry1.configure(background="white")
+        self.Entry1.configure(disabledforeground="#a3a3a3")
+        self.Entry1.configure(font="TkFixedFont")
+        self.Entry1.configure(foreground="#000000")
+        self.Entry1.configure(highlightbackground="#d9d9d9")
+        self.Entry1.configure(highlightcolor="black")
+        self.Entry1.configure(insertbackground="black")
+        self.Entry1.configure(justify='center')
+        self.Entry1.configure(selectbackground="#c4c4c4")
+        self.Entry1.configure(selectforeground="black")
+
+        self.Lets_Chat = tk.Button(self.FrameBox)
+        self.Lets_Chat.place(relx=0.508, rely=0.774, height=24, width=68)
+        self.Lets_Chat.configure(activebackground="#ececec")
+        self.Lets_Chat.configure(activeforeground="#000000")
+        self.Lets_Chat.configure(background="#d9d9d9")
+        self.Lets_Chat.configure(disabledforeground="#a3a3a3")
+        self.Lets_Chat.configure(foreground="#000000")
+        self.Lets_Chat.configure(highlightbackground="#d9d9d9")
+        self.Lets_Chat.configure(highlightcolor="black")
+        self.Lets_Chat.configure(pady="0")
+        self.Lets_Chat.configure(text='''Let's Chat''')
+
+        self.Kembali = tk.Button(self.FrameBox)
+        self.Kembali.place(relx=0.738, rely=0.774, height=24, width=62)
+        self.Kembali.configure(activebackground="#ececec")
+        self.Kembali.configure(activeforeground="#000000")
+        self.Kembali.configure(background="#d9d9d9")
+        self.Kembali.configure(disabledforeground="#a3a3a3")
+        self.Kembali.configure(foreground="#000000")
+        self.Kembali.configure(highlightbackground="#d9d9d9")
+        self.Kembali.configure(highlightcolor="black")
+        self.Kembali.configure(pady="0")
+        self.Kembali.configure(text='''Kembali''')
+
+if __name__ == '__main__':
+    vp_start_gui()
 
 
-label_0 = Label(userWindow, text="Take a Username:",font=("bold", 15), bg='green')
-label_0.place(x=15,y=20)
 
-entry_1 = Entry(userWindow,width=42, justify='center')
-entry_1.place(x=20,y=60)
-entry_1.grid(row=0,column=1,padx=20,pady=65,ipady=5)
-add_placeholder_to(entry_1, 'Username')
 
-Button(userWindow, text="Let's Chat",width=10,bg='brown',fg='white').place(x=110,y=120)
-Button(userWindow, text='Kembali',width=10,bg='brown',fg='white').place(x=198,y=120)
 
-userWindow.mainloop()
