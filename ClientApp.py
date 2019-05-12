@@ -44,12 +44,6 @@ send.start()
 #recv.join()
 #send.join()
 
-while True:
-    raw = str(input())
-    order = Res.Response(201)
-    order.content({'message':raw})
-    reqQueue.put(order.encode())
-
 
 def initialization(name="Anonymous",pic=None):
     request = Req.Request(100)
@@ -61,12 +55,53 @@ def initialization(name="Anonymous",pic=None):
     request.content = content
     return request.encode()
 
-def createGroup(name,info=None,mes):
+def createGroup(name,info=None):
     request = Req.Request(102)
     content = {}
     content['owner']=USER_NAME
-    content['name']=name
-    content['info']=info
+    content['group']=name
     content['message']='Melakukan Register Group'
+    content['info']=info
     request.content = content
     return request.encode()
+
+def destroyGroup(name):
+    request = Req.Request(103)
+    content = {}
+    content['owner']=USER_NAME
+    content['group']=name
+    content['message']='Melakukan Penghapusan Group'
+    request.content = content
+    return request.encode()
+
+def sendMessage(message,toGroup ='public',info=None):
+    request = Req.Request(201)
+    content = {}
+    content['owner']=USER_NAME
+    content['toGroup']=toGroup
+    content['message']=message
+    content['info']=info
+    request.content = content
+    return request.encode()
+
+def sendFile(file,message=None,toGroup='public',info=None):
+    request = Req.Request(201)
+    content = {}
+    content['owner']=USER_NAME
+    content['toGroup']=toGroup
+    content['message']=message
+    content['file']=file
+    content['info']=info
+    request.content = content
+    return request.encode()
+
+
+
+reqQueue.put(initialization('Sora'))
+
+while True:
+    raw = str(input())
+    order = Res.Response(201)
+    order.content({'message':raw})
+    reqQueue.put(order.encode())
+

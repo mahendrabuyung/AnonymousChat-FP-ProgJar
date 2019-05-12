@@ -91,7 +91,7 @@ class Client(threading.Thread):
                 if toGroup in self.publicGroups or toGroup in friend.myGroup:
                     if friend == self :
                         print('self')
-                        newResponse.content['messege'] = 'ping'
+                        newResponse.content['message'] = 'ping'
                         friend.sendMessage(newResponse.encode())
                     else :
                         print('other')
