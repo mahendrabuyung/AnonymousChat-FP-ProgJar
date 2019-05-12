@@ -51,22 +51,17 @@ def register(name="Anonymous",pic=None):
     request.content = content
     return request.encode()
 
-def createGroup(name,info=None):
+def changeName(name,info=None):
     request = Req.Request(102)
     content = {}
-    content['owner']=USER_NAME
-    content['group']=name
-    content['message']='Melakukan Register Group'
-    content['info']=info
+    content['newname']=name
     request.content = content
     return request.encode()
 
-def destroyGroup(name):
+def changeGroup(group):
     request = Req.Request(103)
     content = {}
-    content['owner']=USER_NAME
-    content['group']=name
-    content['message']='Melakukan Penghapusan Group'
+    content['newgroup']=group
     request.content = content
     return request.encode()
 
@@ -126,7 +121,7 @@ send.start()
 #send.join()
 
 reqQueue.put(register('Sora'))
-
+reqQueue.put(changeName('CUCKBOY69'))
 while True:
     raw = str(input())
     order = Res.Response(201)

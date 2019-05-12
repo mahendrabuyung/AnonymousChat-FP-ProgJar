@@ -54,29 +54,33 @@ class Client(threading.Thread):
                 newRequest = self.connectionRecv.recv(2048)
                 newRequest = Req.decode(newRequest) 
                 
-                # if newRequest.kode == 201:
-                #     message = newRequest.content['message']
-                #     self.messageLast = message                
-                #     self.message = message
-                #     print("-------------------------new send")
-                #     print(message)
-                #     self.broadcast(message)
-                #     print("--done--")
-                # elif newRequest.kode == 102:
-                #     newname = newRequest.content['newname']
-                #     print(newname)
-                #     print("-------------------------pepega send")
-                #     self.name = newname
-                #     self.selfbroadcast("name changed to"+ newname)
-                #     print("--Kappa--")
-                message = newRequest.content['message']
-                self.messageLast = message
-                self.message = message
-                print("-------------------------new send")
-                print(message)
-                # print(newRequest.kode)
-                self.broadcast(message)
-                print("--done--")
+                print(newRequest.code)
+                if newRequest.code == 201:
+                    message = newRequest.content['message']
+                    self.messageLast = message                
+                    self.message = message
+                    print("-------------------------new send")
+                    print(message)
+                    self.broadcast(message)
+                    print("--done--")
+                elif newRequest.code == 102:
+                    newname = newRequest.content['newname']
+                    print(newname)
+                    print("-------------------------pepega send")
+                    self.name = newname
+                    print("SUPER PPEEGA")
+                    self.selfbroadcast(newname)
+                    print("--Kappa--")
+                elif newRequest.code == 100:
+                    message = newRequest.content['message']
+                    self.messageLast = message
+                    self.message = message
+                    print("-------------------------new send")
+                    print(message)
+                    print(newRequest.code)
+                    self.broadcast(message)
+                    print("--done--")
+            
             except:
                 self.listfriends.remove(self)
                 del self
@@ -85,13 +89,13 @@ class Client(threading.Thread):
     
     def ReplyRequest(self,request):
         content = request.content
-        if(request.kode == 100):
+        if(request.code == 100):
             self.name = content['name']
-        elif(request.kode == 102):
+        elif(request.code == 102):
             self.name = content['newname']
-        elif(request.kode == 103):
+        elif(request.code == 103):
             self.group = content['newgroup']
-        elif(request.kode == 201):
+        elif(request.code == 201):
             self.broadcast('tes')
 
     def broadcast(self,messege,toGroup='public'):
@@ -115,7 +119,7 @@ class Client(threading.Thread):
 
     def selfbroadcast(self, message):
         newResponse = Res.Response(211)
-        newResponse.content({'message':+message})
+        newResponse.content({'message': message})
         for friend in self.listfriends:
             if friend.is_alive():
                 if self.myGroup in friend.myGroup:
