@@ -8,7 +8,6 @@ MAX_BUFFER = 2048
 
 class Client(threading.Thread):
     listfriends = []
-    publicGroups = []
     
     def __init__(self,socketRecv,socketSend):
         self.connectionRecv = socketRecv[0]
@@ -20,7 +19,7 @@ class Client(threading.Thread):
         self.messageTime = ""
         self.messageLast = ""
         self.messageNow = ""
-        self.myGroups = []
+        self.myGroup = "public"
     
     def setAkun(self,name):
         self.name = name
@@ -31,9 +30,8 @@ class Client(threading.Thread):
     def getAkun(self,name):
         return [self.name,self.index]
     
-    def setEnv(self,friends = [],Groups = []):
+    def setEnv(self,friends = []):
         self.listfriends = friends
-        self.publicGroups  = Groups
     
     def sendMessage(self,message):
         try:
@@ -55,12 +53,28 @@ class Client(threading.Thread):
                 print("--run--")
                 newRequest = self.connectionRecv.recv(2048)
                 newRequest = Req.decode(newRequest) 
+                
+                # if newRequest.kode == 201:
+                #     message = newRequest.content['message']
+                #     self.messageLast = message                
+                #     self.message = message
+                #     print("-------------------------new send")
+                #     print(message)
+                #     self.broadcast(message)
+                #     print("--done--")
+                # elif newRequest.kode == 102:
+                #     newname = newRequest.content['newname']
+                #     print(newname)
+                #     print("-------------------------pepega send")
+                #     self.name = newname
+                #     self.selfbroadcast("name changed to"+ newname)
+                #     print("--Kappa--")
                 message = newRequest.content['message']
                 self.messageLast = message
                 self.message = message
                 print("-------------------------new send")
                 print(message)
-                print(self.publicGroups)
+                # print(newRequest.kode)
                 self.broadcast(message)
                 print("--done--")
             except:
@@ -74,9 +88,9 @@ class Client(threading.Thread):
         if(request.kode == 100):
             self.name = content['name']
         elif(request.kode == 102):
-            self.listgroups.append(content['groupadded'])
+            self.name = content['newname']
         elif(request.kode == 103):
-            self.listgroups.remove(content['groupadded'])
+            self.group = content['newgroup']
         elif(request.kode == 201):
             self.broadcast('tes')
 
@@ -88,16 +102,29 @@ class Client(threading.Thread):
 
         for friend in self.listfriends:
             if friend.is_alive():
-                if toGroup in self.publicGroups or toGroup in friend.myGroup:
+                if self.myGroup in friend.myGroup:
                     if friend == self :
                         print('self')
-                        newResponse.content['message'] = 'ping'
+                        newResponse.content['messege'] = 'ping'
                         friend.sendMessage(newResponse.encode())
                     else :
                         print('other')
                         friend.sendMessage(newResponse.encode())
         print("-------------------------end send")
     
+
+    def selfbroadcast(self, message):
+        newResponse = Res.Response(211)
+        newResponse.content({'message':+message})
+        for friend in self.listfriends:
+            if friend.is_alive():
+                if self.myGroup in friend.myGroup:
+                    if friend == self:
+                        print('changesomething')
+                        friend.sendMessage(newResponse.encode())
+                
+
+
     def __del__(self):
         print (self.addressRecv," dropped")
         print (self.addressSend," dropped")

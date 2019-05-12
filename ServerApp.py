@@ -27,7 +27,7 @@ try:
    while True:
         client = Client(serverRecv.accept(),serverSend.accept())
         listClients.append(client)
-        client.setEnv(listClients,publicGroups)
+        client.setEnv(listClients)
         client.start()
         #print(listclients)
 except KeyboardInterrupt:
