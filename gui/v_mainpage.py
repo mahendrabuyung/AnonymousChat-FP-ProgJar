@@ -26,6 +26,7 @@ def vp_start_gui():
     global val, w, root
     root = tk.Tk()
     top = main (root)
+    root.resizable(False, False)
     v_mainpage_support.init(root, top)
     root.mainloop()
 
