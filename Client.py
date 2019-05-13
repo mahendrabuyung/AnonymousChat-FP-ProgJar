@@ -4,6 +4,7 @@ from datetime import datetime
 import Response as Res
 import Request as Req
 from Response import Response
+from ftplib import FTP
 MAX_BUFFER = 2048
 
 class Client(threading.Thread):
@@ -71,7 +72,18 @@ class Client(threading.Thread):
                 newRequest = Req.decode(newRequest) 
                 
                 print(newRequest.code)
-                if newRequest.code == 201: #Permintaan Broadcast
+                if newRequest.code == 202: #Permintaan Broadcast File
+                    message = newRequest.content['message']
+                    file = newRequest.content['file']
+                    filename = newRequest.content['filename']
+                    self.messageLast = message                
+                    self.messageNOW = message
+                    print("-------------------------new send------------------")
+                    print(message)
+                    self.broadcast(message,file,filename)
+                    print("--done--")
+
+                elif newRequest.code == 201: #Permintaan Broadcast
                     message = newRequest.content['message']
                     self.messageLast = message                
                     self.messageNOW = message
@@ -128,17 +140,16 @@ class Client(threading.Thread):
                 del self
                 return 
 
-    def broadcast(self,message,file=None,toGroup='public'): 
+    def broadcast(self,message,file=None,filename=None,toGroup='public'): 
         #fungsi ini bertugas melakukan broadcasting pesan atau file
-        
         newResponse = Res.Response(211)
-
         content = {}
         content['sender'] = self.name
         content['message'] = message
         if(file!=None):
             newResponse.code = 212
-            content['file']  = file
+            content['file']      = file
+            content['filename']  = filename
         content['toGroup'] = toGroup
 
         newResponse.content = content

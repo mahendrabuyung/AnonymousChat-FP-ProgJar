@@ -30,6 +30,14 @@ listClients = []
 publicGroups = ['public']
 listusersftp = DummyAuthorizer()
 
+#-----------Free Function
+def randstring():
+    all_char = string.ascii_letters + string.digits
+    random = "".join( choice(all_char) for x in range(30))
+    return random
+#-----------Free Function done
+
+
 def runFTP():
     try:
         handler = FTPHandler
@@ -42,15 +50,11 @@ def runFTP():
 
 def adduserFTP(user,password):
     try:
-        listusersftp.add_user(user,password, '.', perm='elradfmw')
+        listusersftp.add_user(user,password, 'store', perm='elradfmw')
     except:
         print("Cannot add User :",user)
         return
 
-def randstring():
-    all_char = string.ascii_letters + string.digits
-    random = "".join( choice(all_char) for x in range(20) )
-    return random
 
 #Ftp dijalankan sebagai thread agar userftp bersifat dinamis(dapat ditambah)
 FTPForever = Thread(target=runFTP)
@@ -65,6 +69,7 @@ try:
         #randomisasi userlogin dan password
         userFTP = randstring()
         passwordFTP = randstring()
+
         #penambahan user ke server FTP
         adduserFTP(userFTP,passwordFTP)
 
@@ -77,4 +82,5 @@ try:
 
 except KeyboardInterrupt:
     print("KeyboardInterrupt has been caught.")
+
 
