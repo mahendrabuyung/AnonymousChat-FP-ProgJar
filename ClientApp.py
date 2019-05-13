@@ -3,7 +3,7 @@ import Response as Res
 import Request as Req
 import threading
 import queue 
-
+from ftplib import FTP
 
 serverSend = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 serverRecv = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -11,6 +11,7 @@ serverRecv = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 IP_ADDRESS = '127.0.0.1'
 PORT_RECV = 3010
 PORT_SEND = 3000
+PORT_FTP = 3000
 MAX_BUFFER = 2048
 
 #-----------User Default 
@@ -25,23 +26,9 @@ serverRecv.connect((IP_ADDRESS,PORT_RECV))
 reqQueue = queue.Queue()
 resQueue = queue.Queue()
 
-def recvForever():
-    while True:
-        if resQueue.empty() == queue.Empty:
-            continue
-        myRes = serverRecv.recv(2048)
-        myRes = Res.decode(myRes)
-        print(myRes.content)
-
-def sendForever():
-    while True:
-        if reqQueue.empty() == queue.Empty:
-            continue
-        order = reqQueue.get()
-        serverSend.sendall(order)
 
 #-----------------------Send Request----------------#
-def register(name="Anonymous",pic=None):
+def register(name="Anonymous",pic=""):
     request = Req.Request(100)
     content = {}
     USER_NAME = name
@@ -51,7 +38,7 @@ def register(name="Anonymous",pic=None):
     request.content = content
     return request.encode()
 
-def changeName(name,info=None):
+def changeName(name):
     request = Req.Request(102)
     content = {}
     content['newname']=name
@@ -62,6 +49,7 @@ def changeGroup(group):
     request = Req.Request(103)
     content = {}
     content['newgroup']=group
+    content['message']='Permintaan Ganti Group'
     request.content = content
     return request.encode()
 
@@ -76,7 +64,7 @@ def sendMessage(message,toGroup ='public',info=None):
     return request.encode()
 
 def sendFile(file,message=None,toGroup='public',info=None):
-    request = Req.Request(201)
+    request = Req.Request(202)
     content = {}
     content['owner']=USER_NAME
     content['toGroup']=toGroup
@@ -88,8 +76,8 @@ def sendFile(file,message=None,toGroup='public',info=None):
 
 #-----------------------Recaive Response----------------#
 def initialization(response):
-    USER_FTP =  response.content['ftpUser']
-    TOKEN_FTP = response.content['ftpToken']
+    USER_FTP =  response.content['userftp']
+    TOKEN_FTP = response.content['tokenftp']
 
 def Update(response):
     USER_NAME  = response.content['name']
@@ -108,9 +96,32 @@ def file_response(reponse):
     file    = response.content['file']
     toGroup = response.content['toGroup']
 
+    
+def recvForever():
+    while True:
+        if resQueue.empty() == queue.Empty:
+            continue
+        newRes = serverRecv.recv(2048)
+        newRes = Res.decode(newRes)
+        print("code : ",newRes.code," | ",newRes.content)
 
+        if newRes.code == Res.INITIATILION_RESPONSE :
+            initialization(newRes)
+        elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
+            print('GET MESSAGE')
+        elif newRes.code == Res.RECV_FILE_RESPONSE:
+            print('GET FILE')
+        elif newRes.code == Res.UPDATE_RESPONSE :
+            print('Will UPDATE TKINTER')
+        elif newRes.code == Res.FEEDBACK_RESPONSE:
+            print('Will FEEDBACK RESPONSE')
 
-
+def sendForever():
+    while True:
+        if reqQueue.empty() == queue.Empty:
+            continue
+        order = reqQueue.get()
+        serverSend.sendall(order)
 
 recv = threading.Thread(target=recvForever)#getEveryResponse
 send = threading.Thread(target=sendForever)#sendEveryResponse
@@ -121,7 +132,7 @@ send.start()
 #send.join()
 
 reqQueue.put(register('Sora'))
-reqQueue.put(changeName('CUCKBOY69'))
+#reqQueue.put(changeName('CUCKBOY69'))
 while True:
     raw = str(input())
     order = Res.Response(201)

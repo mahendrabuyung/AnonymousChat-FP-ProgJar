@@ -8,30 +8,33 @@ MAX_BUFFER = 2048
 
 class Client(threading.Thread):
     listfriends = []
+    listfriends_ftp = []
     
     def __init__(self,socketRecv,socketSend):
         self.connectionRecv = socketRecv[0]
         self.addressRecv = socketRecv[1]
         self.connectionSend = socketSend[0]
         self.addressSend = socketSend[1]
+        self.profilPic = ""
 
         threading.Thread.__init__(self)
-        self.messageTime = ""
         self.messageLast = ""
         self.messageNow = ""
         self.myGroup = "public"
     
-    def setAkun(self,name):
-        self.name = name
+    def setAkunFTP(self,ftp):
+        self.userftp     = ftp[0]
+        self.passwordftp = ftp[1]
     
+    def getAkunFTP(self):
+        return [self.userftp,self.passwordftp]
+        
     def addGroup(self,group):
         self.myGroups.append(group)
-
-    def getAkun(self,name):
-        return [self.name,self.index]
     
-    def setEnv(self,friends = []):
+    def setEnv(self,friends = [],friends_ftp=None):
         self.listfriends = friends
+        self.listfriends_ftp = friends_ftp
     
     def sendMessage(self,message):
         try:
@@ -45,92 +48,138 @@ class Client(threading.Thread):
     
     def getMessageNow(self):
         message = self.messageNow
+        self.messageNow = ""
         return message
+
+    def successMessage(self):
+        newResponse = Res.Response(410)
+        newResponse.content={'status':'success'}
+        return newResponse.encode()
+    
+    def failedMessage(self):
+        newResponse = Res.Response(410)
+        newResponse.content={'status':'failed'}
+        return newResponse.encode()
     
     def run(self):
         while True :
             try:
                 print("--run--")
+                print("client active  : ",self.listfriends)
+                print("")
                 newRequest = self.connectionRecv.recv(2048)
                 newRequest = Req.decode(newRequest) 
                 
                 print(newRequest.code)
-                if newRequest.code == 201:
+                if newRequest.code == 201: #Permintaan Broadcast
                     message = newRequest.content['message']
                     self.messageLast = message                
-                    self.message = message
-                    print("-------------------------new send")
+                    self.messageNOW = message
+                    print("-------------------------new send------------------")
                     print(message)
                     self.broadcast(message)
                     print("--done--")
-                elif newRequest.code == 102:
+
+                elif newRequest.code == 102: #Permintaan ganti nama
+                    print("-------------------------Change Name-------------")
+                    if(self.name!=None):
+                        oldName = self.name
+                        print('done semua')
+                    else:
+                        oldName = ""
                     newname = newRequest.content['newname']
-                    print(newname)
-                    print("-------------------------pepega send")
                     self.name = newname
-                    print("SUPER PPEEGA")
-                    self.selfbroadcast(newname)
-                    print("--Kappa--")
-                elif newRequest.code == 100:
-                    message = newRequest.content['message']
-                    self.messageLast = message
-                    self.message = message
-                    print("-------------------------new send")
+                    print('dari :',oldName)
+                    print('to :',self.name)
+                    self.sendMessage(self.successMessage())
+                    self.selfbroadcast(oldName+" ganti name ke "+newname)
+                    print("--done name--")
+
+                elif newRequest.code == 103: #Permintaan ganti group
+                    content = newRequest.content
+                    self.messageLast = content['message']
+                    self.messageNOW = content['message']
+                    self.myGroup = content['newgroup']
+                    print("-------------------------new send------------")
                     print(message)
                     print(newRequest.code)
-                    self.broadcast(message)
+                    self.sendMessage(self.successMessage())
+                    print("--done--")
+                
+                elif newRequest.code == 100: #Permintaan insisiasi
+                    content = newRequest.content
+                    self.name = content['name']
+                    self.profilPic = content['profil']
+                    print(content['message'])
+                    
+                    self.sendMessage(self.successMessage())
+
+                    newRes = Res.Response(110)
+                    content = {}
+                    content['userftp']  = self.userftp
+                    content['tokenftp'] = self.passwordftp
+                    newRes.content = content
+                    self.sendMessage(newRes.encode())
+
                     print("--done--")
             
             except:
                 self.listfriends.remove(self)
                 del self
                 return 
-                
-    
-    def ReplyRequest(self,request):
-        content = request.content
-        if(request.code == 100):
-            self.name = content['name']
-        elif(request.code == 102):
-            self.name = content['newname']
-        elif(request.code == 103):
-            self.group = content['newgroup']
-        elif(request.code == 201):
-            self.broadcast('tes')
 
-    def broadcast(self,messege,toGroup='public'):
-        #bugging------------------
-        print(self.listfriends)
+    def broadcast(self,message,file=None,toGroup='public'): 
+        #fungsi ini bertugas melakukan broadcasting pesan atau file
+        
         newResponse = Res.Response(211)
-        newResponse.content({'message':'kukembalikan '+messege,"toGroup":toGroup})
 
+        content = {}
+        content['sender'] = self.name
+        content['message'] = message
+        if(file!=None):
+            newResponse.code = 212
+            content['file']  = file
+        content['toGroup'] = toGroup
+
+        newResponse.content = content
+        print('here')
         for friend in self.listfriends:
             if friend.is_alive():
                 if self.myGroup in friend.myGroup:
                     if friend == self :
-                        print('self')
-                        newResponse.content['messege'] = 'ping'
-                        friend.sendMessage(newResponse.encode())
+                        print('to self')
+                        friend.sendMessage(self.successMessage())
                     else :
-                        print('other')
+                        print('to other')
                         friend.sendMessage(newResponse.encode())
-        print("-------------------------end send")
-    
 
-    def selfbroadcast(self, message):
+    def selfbroadcast(self,message,file=None,toGroup='public'):
         newResponse = Res.Response(211)
-        newResponse.content({'message': message})
+        print('done')
+        content = {}
+        content['sender'] = self.name
+        content['message'] = message
+        
+        if(file!=None):
+            newResponse.code = 212
+            content['file']  = file
+        content['toGroup'] = toGroup
+        
+        newResponse.content = content
+        
         for friend in self.listfriends:
             if friend.is_alive():
                 if self.myGroup in friend.myGroup:
                     if friend == self:
-                        print('changesomething')
                         friend.sendMessage(newResponse.encode())
-                
 
 
     def __del__(self):
-        print (self.addressRecv," dropped")
-        print (self.addressSend," dropped")
+        print("----------------------dropped------------------------")
+        self.listfriends_ftp.remove_user(self.userftp)
+        print (self.name," Recaive adress")
+        print (self.addressRecv," Recaive adress")
+        print (self.addressSend," Send adress")
+        print("----------------------dropped------------------------")
         return
     
