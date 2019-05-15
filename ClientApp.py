@@ -65,6 +65,7 @@ def sendForever():
             continue
         order = reqQueue.get()
         serverSend.sendall(order)
+        print("qquee done")
 
 recv = threading.Thread(target=recvForever)#getEveryResponse
 send = threading.Thread(target=sendForever)#sendEveryResponse
@@ -105,11 +106,19 @@ def changeName(name):
     request.content = content
     return request.encode()
 
-def changeGroup(group):
+def addGroup(group):
     request = Req.Request(103)
     content = {}
     content['newgroup']=group
-    content['message']='Permintaan Ganti Group'
+    content['message']='Permintaan Tambah Group'
+    request.content = content
+    return request.encode()
+
+def removeGroup(group):
+    request = Req.Request(104)
+    content = {}
+    content['delgroup']=group
+    content['message']='Permintaan destroy Group'
     request.content = content
     return request.encode()
 
@@ -186,14 +195,15 @@ send.start()
 #send.join()
 
 reqQueue.put(register('Sora'))
+# reqQueue.put(sendFile("tes.py"))
+reqQueue.put(addGroup("anime"))
 
 
-#reqQueue.put(changeName('CUCKBOY69'))
 
 
 while True:
     raw = str(input())
-    reqQueue.put(sendFile("tes.py"))
+    reqQueue.put(removeGroup(raw))
 
 def logout():
     serverFTP.quit()

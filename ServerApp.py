@@ -50,7 +50,7 @@ def runFTP():
 
 def adduserFTP(user,password):
     try:
-        listusersftp.add_user(user,password, 'store', perm='elradfmw')
+        listusersftp.add_user(user,password, 'files', perm='elradfmw')
     except:
         print("Cannot add User :",user)
         return
@@ -72,6 +72,12 @@ try:
 
         #penambahan user ke server FTP
         adduserFTP(userFTP,passwordFTP)
+
+
+        # handler = FTPHandler
+        # handler.authorizer = listusersftp
+        # listusersftp.validate_authentication(userFTP, passwordFTP, handler)
+
 
         #set Environment for kliens -> tetangga yang aktif
         client.setEnv(listClients,listusersftp)

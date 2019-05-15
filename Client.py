@@ -21,17 +21,16 @@ class Client(threading.Thread):
         threading.Thread.__init__(self)
         self.messageLast = ""
         self.messageNow = ""
-        self.myGroup = "public"
-    
+        self.myGroup = []
+        self.myGroup.append("public")
+        self.tripcode = None
+
     def setAkunFTP(self,ftp):
         self.userftp     = ftp[0]
         self.passwordftp = ftp[1]
     
     def getAkunFTP(self):
         return [self.userftp,self.passwordftp]
-        
-    def addGroup(self,group):
-        self.myGroups.append(group)
     
     def setEnv(self,friends = [],friends_ftp=None):
         self.listfriends = friends
@@ -107,15 +106,36 @@ class Client(threading.Thread):
                     self.selfbroadcast(oldName+" ganti name ke "+newname)
                     print("--done name--")
 
-                elif newRequest.code == 103: #Permintaan ganti group
+                elif newRequest.code == 103: #Permintaan tambah group
                     content = newRequest.content
                     self.messageLast = content['message']
                     self.messageNOW = content['message']
-                    self.myGroup = content['newgroup']
+                    self.myGroup.append(content['newgroup'])
                     print("-------------------------new send------------")
-                    print(message)
-                    print(newRequest.code)
+                    print(self.myGroup)
                     self.sendMessage(self.successMessage())
+                    print("--done--")
+
+
+                elif newRequest.code == 104: #Permintaan hapus group
+                    content = newRequest.content
+                    self.messageLast = content['message']
+                    self.messageNOW = content['message']
+
+                    print("-------------------------new send------------")
+                    print(self.myGroup)
+                    print(content['delgroup'])
+                    checkflag = True
+                    for i in self.myGroup:
+                        if i == content['delgroup']:
+                            checkflag = False
+                            self.myGroup.remove(content['delgroup'])
+                            print("qwert")
+                            self.sendMessage(self.successMessage())
+
+                    if checkflag == True:
+                        self.sendMessage(self.failedMessage())
+                    print(self.myGroup)
                     print("--done--")
                 
                 elif newRequest.code == 100: #Permintaan insisiasi
@@ -123,16 +143,14 @@ class Client(threading.Thread):
                     self.name = content['name']
                     self.profilPic = content['profil']
                     print(content['message'])
-                    
                     self.sendMessage(self.successMessage())
-
+                    
                     newRes = Res.Response(110)
                     content = {}
                     content['userftp']  = self.userftp
                     content['tokenftp'] = self.passwordftp
                     newRes.content = content
                     self.sendMessage(newRes.encode())
-
                     print("--done--")
             
             except:
@@ -164,25 +182,6 @@ class Client(threading.Thread):
                         print('to other')
                         friend.sendMessage(newResponse.encode())
 
-    def selfbroadcast(self,message,file=None,toGroup='public'):
-        newResponse = Res.Response(211)
-        print('done')
-        content = {}
-        content['sender'] = self.name
-        content['message'] = message
-        
-        if(file!=None):
-            newResponse.code = 212
-            content['file']  = file
-        content['toGroup'] = toGroup
-        
-        newResponse.content = content
-        
-        for friend in self.listfriends:
-            if friend.is_alive():
-                if self.myGroup in friend.myGroup:
-                    if friend == self:
-                        friend.sendMessage(newResponse.encode())
 
 
     def __del__(self):
