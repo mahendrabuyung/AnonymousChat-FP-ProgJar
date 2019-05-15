@@ -203,18 +203,22 @@ send.start()
 #send.join()
 
 reqQueue.put(register('Sora'))
-# reqQueue.put(addGroup("anime"))
+reqQueue.put(addGroup("anime"))
 
 raw = str(input())
 reqQueue.put(changeName(raw))
 # reqQueue.put(logout())
 
+# raw = str(input())
+# reqQueue.put(sendMessage(raw, "anime"))
+
 
 while True:
     raw = str(input())
-    # reqQueue.put(sendFile("tes.py", "halo halo"))
-    # reqQueue.put(removeGroup(raw))
-    reqQueue.put(sendMessage(raw))
+    reqQueue.put(sendFile("tes.py", "halo halo"))
+    raw = str(input())
+
+    reqQueue.put(downloadFTP(raw,raw))
 
 def logout():
     serverFTP.quit()

@@ -84,11 +84,12 @@ class Client(threading.Thread):
 
                 elif newRequest.code == 201: #Permintaan Broadcast
                     message = newRequest.content['message']
+                    targetgroup = newRequest.content['toGroup']
                     self.messageLast = message                
                     self.messageNOW = message
                     print("-------------------------new send------------------")
                     print(message)
-                    self.broadcast(message)
+                    self.broadcast(message, toGroup=targetgroup)
                     print("--done--")
 
                 elif newRequest.code == 102: #Permintaan ganti nama
@@ -163,28 +164,30 @@ class Client(threading.Thread):
 
     def broadcast(self,message,file=None,filename=None,toGroup='public'): 
         #fungsi ini bertugas melakukan broadcasting pesan atau file
+
+        print(toGroup)
+
         newResponse = Res.Response(211)
         content = {}
         content['sender'] = self.name
         content['message'] = message
+
+
         if(file!=None):
             newResponse.code = 212
             content['file']      = file
             content['filename']  = filename
+
         content['toGroup'] = toGroup
 
         newResponse.content = content
         print('here')
         for friend in self.listfriends:
-            print (friend.name)
             if friend.is_alive():
-                print("monkagiga")
                 if toGroup in friend.myGroup:
                     if friend == self :
-                        print('to self')
                         self.sendMessage(self.successMessage())
                     else :
-                        print('to other')
                         friend.sendMessage(newResponse.encode())
 
 
