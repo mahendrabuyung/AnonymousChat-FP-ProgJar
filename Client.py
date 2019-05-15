@@ -103,7 +103,7 @@ class Client(threading.Thread):
                     print('dari :',oldName)
                     print('to :',self.name)
                     self.sendMessage(self.successMessage())
-                    self.selfbroadcast(oldName+" ganti name ke "+newname)
+                    
                     print("--done name--")
 
                 elif newRequest.code == 103: #Permintaan tambah group
@@ -115,7 +115,6 @@ class Client(threading.Thread):
                     print(self.myGroup)
                     self.sendMessage(self.successMessage())
                     print("--done--")
-
 
                 elif newRequest.code == 104: #Permintaan hapus group
                     content = newRequest.content
@@ -144,7 +143,7 @@ class Client(threading.Thread):
                     self.profilPic = content['profil']
                     print(content['message'])
                     self.sendMessage(self.successMessage())
-                    
+
                     newRes = Res.Response(110)
                     content = {}
                     content['userftp']  = self.userftp
@@ -152,7 +151,11 @@ class Client(threading.Thread):
                     newRes.content = content
                     self.sendMessage(newRes.encode())
                     print("--done--")
-            
+
+                elif newRequest.code == 500:
+                    self.listfriends.remove(self)
+                    del self
+
             except:
                 self.listfriends.remove(self)
                 del self
@@ -173,11 +176,13 @@ class Client(threading.Thread):
         newResponse.content = content
         print('here')
         for friend in self.listfriends:
+            print (friend.name)
             if friend.is_alive():
-                if self.myGroup in friend.myGroup:
+                print("monkagiga")
+                if toGroup in friend.myGroup:
                     if friend == self :
                         print('to self')
-                        friend.sendMessage(self.successMessage())
+                        self.sendMessage(self.successMessage())
                     else :
                         print('to other')
                         friend.sendMessage(newResponse.encode())

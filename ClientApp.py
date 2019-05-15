@@ -132,6 +132,7 @@ def sendMessage(message,toGroup ='public',info=None):
     request.content = content
     return request.encode()
 
+
 def sendFile(file,message=None,toGroup='public',info=None):
     request = Req.Request(202) 
 
@@ -149,6 +150,13 @@ def sendFile(file,message=None,toGroup='public',info=None):
     content['info']=info
     request.content = content
     return request.encode()
+
+
+
+def logout():
+    request = Req.Request(500)
+    return request.encode()
+
 #-----------------------Send Request done----------------#
 
 #-----------------------Recaive Response----------------#
@@ -195,15 +203,18 @@ send.start()
 #send.join()
 
 reqQueue.put(register('Sora'))
-# reqQueue.put(sendFile("tes.py"))
-reqQueue.put(addGroup("anime"))
+# reqQueue.put(addGroup("anime"))
 
-
+raw = str(input())
+reqQueue.put(changeName(raw))
+# reqQueue.put(logout())
 
 
 while True:
     raw = str(input())
-    reqQueue.put(removeGroup(raw))
+    # reqQueue.put(sendFile("tes.py", "halo halo"))
+    # reqQueue.put(removeGroup(raw))
+    reqQueue.put(sendMessage(raw))
 
 def logout():
     serverFTP.quit()

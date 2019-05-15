@@ -28,4 +28,7 @@
 
 import hashlib
 
-hash = hashlib.md5(night.text.encode("utf-8")).hexdigest()
+
+astor = "farras"
+asdhash = hashlib.md5(astor.encode("utf-8")).hexdigest()
+print(asdhash)
