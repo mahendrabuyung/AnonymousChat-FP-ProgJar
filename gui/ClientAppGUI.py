@@ -1,3 +1,5 @@
+import sys
+
 try:
     import Tkinter as tk
 except ImportError:
@@ -125,7 +127,7 @@ class Connection():
         self.LabelFrameConn.configure(background="#31BA7F")
         self.LabelFrameConn.configure(width=350)
 
-        self.Lets_Chat = tk.Button(self.LabelFrameConn)
+        self.Lets_Chat = tk.Button(self.LabelFrameConn, command=self.openMainWindow)
         self.Lets_Chat.place(relx=0.429, rely=0.759, height=24, width=87
                 , bordermode='ignore')
         self.Lets_Chat.configure(activebackground="#31BA7F")
@@ -213,6 +215,8 @@ class Connection():
         self.hostname_entry.configure(foreground="#000000")
         self.hostname_entry.configure(insertbackground="black")
         self.hostname_entry.configure(width=214)
+        self.hostname_entry.insert(0,"127.0.0.1")
+        self.hostname_entry.configure(justify='center')
 
         self.ftp_entry = tk.Entry(self.LabelFrameConn)
         self.ftp_entry.place(relx=0.329, rely=0.483, height=20, relwidth=0.177
@@ -227,6 +231,8 @@ class Connection():
         self.ftp_entry.configure(selectbackground="#c4c4c4")
         self.ftp_entry.configure(selectforeground="black")
         self.ftp_entry.configure(width=64)
+        self.ftp_entry.insert(0,"3020")
+        self.ftp_entry.configure(justify='center')
 
         self.port_ftp = tk.Label(self.LabelFrameConn)
         self.port_ftp.place(relx=0.329, rely=0.345, height=21, width=61
@@ -253,7 +259,9 @@ class Connection():
         self.recv_entry.configure(insertbackground="black")
         self.recv_entry.configure(selectbackground="#c4c4c4")
         self.recv_entry.configure(selectforeground="black")
-
+        self.recv_entry.insert(0,"3000")
+        self.recv_entry.configure(justify='center')
+		
         self.send_entry = tk.Entry(self.LabelFrameConn)
         self.send_entry.place(relx=0.786, rely=0.483, height=20, relwidth=0.177
                 , bordermode='ignore')
@@ -266,7 +274,9 @@ class Connection():
         self.send_entry.configure(insertbackground="black")
         self.send_entry.configure(selectbackground="#c4c4c4")
         self.send_entry.configure(selectforeground="black")
-
+        self.send_entry.insert(0,"3010")
+        self.send_entry.configure(justify='center')
+		
         self.WelcomeAnonChat = tk.Label(self.FrameBox)
         self.WelcomeAnonChat.place(relx=0.013, rely=0.049, height=31, width=354)
         self.WelcomeAnonChat.configure(background="#31BA7F")
@@ -281,6 +291,418 @@ class Connection():
         root.resizable(False, False)
         GUIWelcome=Welcome(root)
         self.master.destroy()
+
+    def openMainWindow(self):
+        root=tk.Tk()
+        root.resizable(False, False)
+        GUIMain=AnonWinMain(root)
+        self.master.destroy()
+
+class AnonWinMain:
+    def __init__(self,master):
+        '''This class configures and populates the toplevel window.
+           top is the toplevel containing window.'''
+        _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
+        _fgcolor = '#000000'  # X11 color: 'black'
+        _compcolor = '#d9d9d9' # X11 color: 'gray85'
+        _ana1color = '#d9d9d9' # X11 color: 'gray85'
+        _ana2color = '#ececec' # Closest X11 color: 'gray92'
+        self.style = ttk.Style()
+        if sys.platform == "win32":
+            self.style.theme_use('winnative')
+        self.style.configure('.',background=_bgcolor)
+        self.style.configure('.',foreground=_fgcolor)
+        self.style.configure('.',font="TkDefaultFont")
+        self.style.map('.',background=
+            [('selected', _compcolor), ('active',_ana2color)])
+
+        self.master=master
+        self.master.geometry("810x576+394+7")
+        self.master.title("Anonymous Chat")
+        self.master.configure(background="#31BA7F")
+
+        self.style.configure('TNotebook.Tab', background=_bgcolor)
+        self.style.configure('TNotebook.Tab', foreground=_fgcolor)
+        self.style.map('TNotebook.Tab', background=
+            [('selected', _compcolor), ('active',_ana2color)])
+        self.TNotebook1 = ttk.Notebook(self.master)
+        self.TNotebook1.place(relx=0.049, rely=0.243, relheight=0.583
+                , relwidth=0.906)
+        self.TNotebook1.configure(width=734)
+        self.TNotebook1.configure(takefocus="")
+        self.TNotebook1_t0 = tk.Frame(self.TNotebook1)
+        self.TNotebook1.add(self.TNotebook1_t0, padding=3)
+        self.TNotebook1.tab(0, text="Page 1",compound="left",underline="-1",)
+        self.TNotebook1_t0.configure(background="#d9d9d9")
+        self.TNotebook1_t0.configure(highlightbackground="#d9d9d9")
+        self.TNotebook1_t0.configure(highlightcolor="black")
+        self.TNotebook1_t1 = tk.Frame(self.TNotebook1)
+        self.TNotebook1.add(self.TNotebook1_t1, padding=3)
+        self.TNotebook1.tab(1, text="Page 2",compound="left",underline="-1",)
+        self.TNotebook1_t1.configure(background="#d9d9d9")
+        self.TNotebook1_t1.configure(highlightbackground="#d9d9d9")
+        self.TNotebook1_t1.configure(highlightcolor="black")
+
+        self.Scrolledlistbox1 = ScrolledListBox(self.TNotebook1_t0)
+        self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
+                , relwidth=1.001)
+        self.Scrolledlistbox1.configure(background="white")
+        self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
+        self.Scrolledlistbox1.configure(font="TkFixedFont")
+        self.Scrolledlistbox1.configure(foreground="black")
+        self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
+        self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
+        self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
+        self.Scrolledlistbox1.configure(selectforeground="black")
+        self.Scrolledlistbox1.configure(width=10)
+
+        self.Entry1 = tk.Entry(self.master)
+        self.Entry1.place(relx=0.049, rely=0.851,height=30, relwidth=0.622)
+        self.Entry1.configure(background="white")
+        self.Entry1.configure(disabledforeground="#a3a3a3")
+        self.Entry1.configure(font="TkFixedFont")
+        self.Entry1.configure(foreground="#000000")
+        self.Entry1.configure(insertbackground="black")
+        self.Entry1.configure(width=504)
+
+        self.Entry2 = tk.Entry(self.master)
+        self.Entry2.place(relx=0.593, rely=0.035,height=30, relwidth=0.264)
+        self.Entry2.configure(background="white")
+        self.Entry2.configure(disabledforeground="#a3a3a3")
+        self.Entry2.configure(font="TkFixedFont")
+        self.Entry2.configure(foreground="#000000")
+        self.Entry2.configure(insertbackground="black")
+        self.Entry2.configure(width=214)
+        self.Entry2.insert(0,"Anonymous")
+        self.Entry2.configure(justify='center')
+
+        self.m_changenm = tk.Button(self.master)
+        self.m_changenm.place(relx=0.87, rely=0.035, height=31, width=67)
+        self.m_changenm.configure(activebackground="#ececec")
+        self.m_changenm.configure(activeforeground="#000000")
+        self.m_changenm.configure(background="#d9d9d9")
+        self.m_changenm.configure(disabledforeground="#a3a3a3")
+        self.m_changenm.configure(foreground="#000000")
+        self.m_changenm.configure(highlightbackground="#d9d9d9")
+        self.m_changenm.configure(highlightcolor="black")
+        self.m_changenm.configure(pady="0")
+        self.m_changenm.configure(text='''Change''')
+        self.m_changenm.configure(width=57)
+
+        self.ConnectedINFO = tk.LabelFrame(self.master)
+        self.ConnectedINFO.place(relx=0.043, rely=0.017, relheight=0.217
+                , relwidth=0.259)
+        self.ConnectedINFO.configure(relief='groove')
+        self.ConnectedINFO.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.ConnectedINFO.configure(foreground="#ffffff")
+        self.ConnectedINFO.configure(text='''Connected On''')
+        self.ConnectedINFO.configure(background="#31BA7F")
+        self.ConnectedINFO.configure(width=210)
+
+        self.m_hostname = tk.Label(self.ConnectedINFO)
+        self.m_hostname.place(relx=0.0, rely=0.12, height=21, width=84
+                , bordermode='ignore')
+        self.m_hostname.configure(activebackground="#f9f9f9")
+        self.m_hostname.configure(activeforeground="black")
+        self.m_hostname.configure(background="#31BA7F")
+        self.m_hostname.configure(disabledforeground="#a3a3a3")
+        self.m_hostname.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.m_hostname.configure(foreground="#ffffff")
+        self.m_hostname.configure(highlightbackground="#d9d9d9")
+        self.m_hostname.configure(highlightcolor="black")
+        self.m_hostname.configure(text='''Hostname :''')
+
+        self.me_hostname = tk.Label(self.ConnectedINFO)
+        self.me_hostname.place(relx=0.405, rely=0.12, height=21, width=109
+                , bordermode='ignore')
+        self.me_hostname.configure(background="#31BA7F")
+        self.me_hostname.configure(disabledforeground="#a3a3a3")
+        self.me_hostname.configure(foreground="#ffffff")
+        self.me_hostname.configure(text='''127.0.0.1''')
+        self.me_hostname.configure(width=114)
+
+        self.port_label_m = tk.LabelFrame(self.ConnectedINFO)
+        self.port_label_m.place(relx=0.048, rely=0.32, relheight=0.6
+                , relwidth=0.905, bordermode='ignore')
+        self.port_label_m.configure(relief='groove')
+        self.port_label_m.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.port_label_m.configure(foreground="#ffffff")
+        self.port_label_m.configure(text='''Port''')
+        self.port_label_m.configure(background="#31BA7F")
+        self.port_label_m.configure(width=190)
+
+        self.em_recv = tk.Label(self.port_label_m)
+        self.em_recv.place(relx=0.368, rely=0.6, height=21, width=54
+                , bordermode='ignore')
+        self.em_recv.configure(activebackground="#f9f9f9")
+        self.em_recv.configure(activeforeground="black")
+        self.em_recv.configure(background="#31BA7F")
+        self.em_recv.configure(disabledforeground="#a3a3a3")
+        self.em_recv.configure(foreground="#ffffff")
+        self.em_recv.configure(highlightbackground="#d9d9d9")
+        self.em_recv.configure(highlightcolor="black")
+        self.em_recv.configure(text='''127.0.0.1''')
+
+        self.em_send = tk.Label(self.port_label_m)
+        self.em_send.place(relx=0.684, rely=0.6, height=21, width=54
+                , bordermode='ignore')
+        self.em_send.configure(activebackground="#f9f9f9")
+        self.em_send.configure(activeforeground="black")
+        self.em_send.configure(background="#31BA7F")
+        self.em_send.configure(disabledforeground="#a3a3a3")
+        self.em_send.configure(foreground="#ffffff")
+        self.em_send.configure(highlightbackground="#d9d9d9")
+        self.em_send.configure(highlightcolor="black")
+        self.em_send.configure(text='''127.0.0.1''')
+
+        self.m_ftp = tk.Label(self.ConnectedINFO)
+        self.m_ftp.place(relx=0.095, rely=0.48, height=21, width=54
+                , bordermode='ignore')
+        self.m_ftp.configure(activebackground="#f9f9f9")
+        self.m_ftp.configure(activeforeground="black")
+        self.m_ftp.configure(background="#31BA7F")
+        self.m_ftp.configure(disabledforeground="#a3a3a3")
+        self.m_ftp.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.m_ftp.configure(foreground="#ffffff")
+        self.m_ftp.configure(highlightbackground="#d9d9d9")
+        self.m_ftp.configure(highlightcolor="black")
+        self.m_ftp.configure(text='''FTP''')
+        self.m_ftp.configure(width=54)
+
+        self.m_recv = tk.Label(self.ConnectedINFO)
+        self.m_recv.place(relx=0.357, rely=0.48, height=21, width=54
+                , bordermode='ignore')
+        self.m_recv.configure(activebackground="#f9f9f9")
+        self.m_recv.configure(activeforeground="black")
+        self.m_recv.configure(background="#31BA7F")
+        self.m_recv.configure(disabledforeground="#a3a3a3")
+        self.m_recv.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.m_recv.configure(foreground="#ffffff")
+        self.m_recv.configure(highlightbackground="#d9d9d9")
+        self.m_recv.configure(highlightcolor="black")
+        self.m_recv.configure(text='''Recv''')
+        self.m_recv.configure(width=54)
+
+        self.m_send = tk.Label(self.ConnectedINFO)
+        self.m_send.place(relx=0.643, rely=0.48, height=21, width=54
+                , bordermode='ignore')
+        self.m_send.configure(activebackground="#f9f9f9")
+        self.m_send.configure(activeforeground="black")
+        self.m_send.configure(background="#31BA7F")
+        self.m_send.configure(disabledforeground="#a3a3a3")
+        self.m_send.configure(font="-family {Segoe UI} -size 9 -weight bold")
+        self.m_send.configure(foreground="#ffffff")
+        self.m_send.configure(highlightbackground="#d9d9d9")
+        self.m_send.configure(highlightcolor="black")
+        self.m_send.configure(text='''Send''')
+        self.m_send.configure(width=54)
+
+        self.em_ftp = tk.Label(self.ConnectedINFO)
+        self.em_ftp.place(relx=0.095, rely=0.68, height=21, width=54
+                , bordermode='ignore')
+        self.em_ftp.configure(activebackground="#f9f9f9")
+        self.em_ftp.configure(activeforeground="black")
+        self.em_ftp.configure(background="#31BA7F")
+        self.em_ftp.configure(disabledforeground="#a3a3a3")
+        self.em_ftp.configure(foreground="#ffffff")
+        self.em_ftp.configure(highlightbackground="#d9d9d9")
+        self.em_ftp.configure(highlightcolor="black")
+        self.em_ftp.configure(text='''127.0.0.1''')
+        self.em_ftp.configure(width=54)
+
+        self.m_title = tk.Label(self.master)
+        self.m_title.place(relx=0.531, rely=0.104, height=51, width=344)
+        self.m_title.configure(background="#31BA7F")
+        self.m_title.configure(disabledforeground="#a3a3a3")
+        self.m_title.configure(font="-family {Segoe UI} -size 30 -weight bold")
+        self.m_title.configure(foreground="#ffffff")
+        self.m_title.configure(text='''Anonymous Chat''')
+        self.m_title.configure(width=344)
+
+        self.m_title2 = tk.Label(self.master)
+        self.m_title2.place(relx=0.556, rely=0.191, height=21, width=324)
+        self.m_title2.configure(background="#31BA7F")
+        self.m_title2.configure(disabledforeground="#a3a3a3")
+        self.m_title2.configure(font="-family {Segoe UI} -size 10 -weight bold")
+        self.m_title2.configure(foreground="#ffffff")
+        self.m_title2.configure(text='''Enjoy the sensation of chatting with your privacy''')
+        self.m_title2.configure(width=324)
+
+        self.m_create = tk.Button(self.master)
+        self.m_create.place(relx=0.049, rely=0.92, height=34, width=737)
+        self.m_create.configure(activebackground="#ececec")
+        self.m_create.configure(activeforeground="#000000")
+        self.m_create.configure(background="#d9d9d9")
+        self.m_create.configure(disabledforeground="#a3a3a3")
+        self.m_create.configure(foreground="#000000")
+        self.m_create.configure(highlightbackground="#d9d9d9")
+        self.m_create.configure(highlightcolor="black")
+        self.m_create.configure(pady="0")
+        self.m_create.configure(text='''Create Room''')
+        self.m_create.configure(width=737)
+
+        self.m_emot = tk.Button(self.master)
+        self.m_emot.place(relx=0.679, rely=0.851, height=30, width=35)
+        self.m_emot.configure(activebackground="#ececec")
+        self.m_emot.configure(activeforeground="#000000")
+        self.m_emot.configure(background="#d9d9d9")
+        self.m_emot.configure(disabledforeground="#a3a3a3")
+        self.m_emot.configure(foreground="#000000")
+        self.m_emot.configure(highlightbackground="#d9d9d9")
+        self.m_emot.configure(highlightcolor="black")
+        self.m_emot.configure(pady="0")
+        self.m_emot.configure(text='''Emo''')
+        self.m_emot.configure(width=37)
+
+        self.menubar = tk.Menu(self.master,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
+        self.master.configure(menu = self.menubar)
+
+        self.m_sendmain = tk.Button(self.master)
+        self.m_sendmain.place(relx=0.735, rely=0.851, height=29, width=77)
+        self.m_sendmain.configure(activebackground="#ececec")
+        self.m_sendmain.configure(activeforeground="#000000")
+        self.m_sendmain.configure(background="#d9d9d9")
+        self.m_sendmain.configure(disabledforeground="#a3a3a3")
+        self.m_sendmain.configure(foreground="#000000")
+        self.m_sendmain.configure(highlightbackground="#d9d9d9")
+        self.m_sendmain.configure(highlightcolor="black")
+        self.m_sendmain.configure(pady="0")
+        self.m_sendmain.configure(text='''Send''')
+        self.m_sendmain.configure(width=77)
+
+        self.m_browse = tk.Button(self.master)
+        self.m_browse.place(relx=0.84, rely=0.851, height=29, width=97)
+        self.m_browse.configure(activebackground="#ececec")
+        self.m_browse.configure(activeforeground="#000000")
+        self.m_browse.configure(background="#d9d9d9")
+        self.m_browse.configure(disabledforeground="#a3a3a3")
+        self.m_browse.configure(foreground="#000000")
+        self.m_browse.configure(highlightbackground="#d9d9d9")
+        self.m_browse.configure(highlightcolor="black")
+        self.m_browse.configure(pady="0")
+        self.m_browse.configure(text='''Browse''')
+        self.m_browse.configure(width=97)
+
+# The following code is added to facilitate the Scrolled widgets you specified.
+class AutoScroll(object):
+    '''Configure the scrollbars for a widget.'''
+
+    def __init__(self, master):
+        #  Rozen. Added the try-except clauses so that this class
+        #  could be used for scrolled entry widget for which vertical
+        #  scrolling is not supported. 5/7/14.
+        try:
+            vsb = ttk.Scrollbar(master, orient='vertical', command=self.yview)
+        except:
+            pass
+        hsb = ttk.Scrollbar(master, orient='horizontal', command=self.xview)
+
+        #self.configure(yscrollcommand=_autoscroll(vsb),
+        #    xscrollcommand=_autoscroll(hsb))
+        try:
+            self.configure(yscrollcommand=self._autoscroll(vsb))
+        except:
+            pass
+        self.configure(xscrollcommand=self._autoscroll(hsb))
+
+        self.grid(column=0, row=0, sticky='nsew')
+        try:
+            vsb.grid(column=1, row=0, sticky='ns')
+        except:
+            pass
+        hsb.grid(column=0, row=1, sticky='ew')
+
+        master.grid_columnconfigure(0, weight=1)
+        master.grid_rowconfigure(0, weight=1)
+
+        # Copy geometry methods of master  (taken from ScrolledText.py)
+        if py3:
+            methods = tk.Pack.__dict__.keys() | tk.Grid.__dict__.keys() \
+                  | tk.Place.__dict__.keys()
+        else:
+            methods = tk.Pack.__dict__.keys() + tk.Grid.__dict__.keys() \
+                  + tk.Place.__dict__.keys()
+
+        for meth in methods:
+            if meth[0] != '_' and meth not in ('config', 'configure'):
+                setattr(self, meth, getattr(master, meth))
+
+    @staticmethod
+    def _autoscroll(sbar):
+        '''Hide and show scrollbar as needed.'''
+        def wrapped(first, last):
+            first, last = float(first), float(last)
+            if first <= 0 and last >= 1:
+                sbar.grid_remove()
+            else:
+                sbar.grid()
+            sbar.set(first, last)
+        return wrapped
+
+    def __str__(self):
+        return str(self.master)
+
+def _create_container(func):
+    '''Creates a ttk Frame with a given master, and use this new frame to
+    place the scrollbars and the widget.'''
+    def wrapped(cls, master, **kw):
+        container = ttk.Frame(master)
+        container.bind('<Enter>', lambda e: _bound_to_mousewheel(e, container))
+        container.bind('<Leave>', lambda e: _unbound_to_mousewheel(e, container))
+        return func(cls, container, **kw)
+    return wrapped
+
+class ScrolledListBox(AutoScroll, tk.Listbox):
+    '''A standard Tkinter Text widget with scrollbars that will
+    automatically show/hide as needed.'''
+    @_create_container
+    def __init__(self, master, **kw):
+        tk.Listbox.__init__(self, master, **kw)
+        AutoScroll.__init__(self, master)
+
+import platform
+def _bound_to_mousewheel(event, widget):
+    child = widget.winfo_children()[0]
+    if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        child.bind_all('<MouseWheel>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Shift-MouseWheel>', lambda e: _on_shiftmouse(e, child))
+    else:
+        child.bind_all('<Button-4>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Button-5>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Shift-Button-4>', lambda e: _on_shiftmouse(e, child))
+        child.bind_all('<Shift-Button-5>', lambda e: _on_shiftmouse(e, child))
+
+def _unbound_to_mousewheel(event, widget):
+    if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        widget.unbind_all('<MouseWheel>')
+        widget.unbind_all('<Shift-MouseWheel>')
+    else:
+        widget.unbind_all('<Button-4>')
+        widget.unbind_all('<Button-5>')
+        widget.unbind_all('<Shift-Button-4>')
+        widget.unbind_all('<Shift-Button-5>')
+
+def _on_mousewheel(event, widget):
+    if platform.system() == 'Windows':
+        widget.yview_scroll(-1*int(event.delta/120),'units')
+    elif platform.system() == 'Darwin':
+        widget.yview_scroll(-1*int(event.delta),'units')
+    else:
+        if event.num == 4:
+            widget.yview_scroll(-1, 'units')
+        elif event.num == 5:
+            widget.yview_scroll(1, 'units')
+
+def _on_shiftmouse(event, widget):
+    if platform.system() == 'Windows':
+        widget.xview_scroll(-1*int(event.delta/120), 'units')
+    elif platform.system() == 'Darwin':
+        widget.xview_scroll(-1*int(event.delta), 'units')
+    else:
+        if event.num == 4:
+            widget.xview_scroll(-1, 'units')
+        elif event.num == 5:
+            widget.xview_scroll(1, 'units')
 
 def main():
     root=tk.Tk()
