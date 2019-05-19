@@ -133,6 +133,8 @@ class Box___Take_a_Username:
         self.Label1.configure(text='''Take a Username:''')
 
 if __name__ == '__main__':
+    CA.run("127.0.0.1", 3000, 3010, 3020)
+
     vp_start_gui()
 
 

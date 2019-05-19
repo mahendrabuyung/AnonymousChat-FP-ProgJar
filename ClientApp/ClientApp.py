@@ -25,11 +25,13 @@ TOKEN_FTP  = ""
 LIST_GROUP = []
 
 
-serverSend.connect((IP_ADDRESS,PORT_SEND))
-serverRecv.connect((IP_ADDRESS,PORT_RECV))
+
 
 reqQueue = queue.Queue()
 resQueue = queue.Queue()
+
+
+
 
 #------------------------------------------Server
 #Connect To FTP
@@ -54,6 +56,7 @@ def recvForever():
             print('GET FILE')
             file_response(newRes)
         elif newRes.code == Res.UPDATE_RESPONSE :
+
             print('Will UPDATE TKINTER')
         elif newRes.code == Res.FEEDBACK_RESPONSE:
             print('Will FEEDBACK RESPONSE')
@@ -67,8 +70,21 @@ def sendForever():
         serverSend.sendall(order)
         print("qquee done")
 
+
 recv = threading.Thread(target=recvForever)#getEveryResponse
 send = threading.Thread(target=sendForever)#sendEveryResponse
+
+
+def run(address, port_send, port_recv, port_ftp):
+    IP_ADDRESS = address
+    PORT_SEND = port_send
+    PORT_RECV = port_recv
+    PORT_FTP = port_ftp
+    serverSend.connect((IP_ADDRESS,PORT_SEND))
+    serverRecv.connect((IP_ADDRESS,PORT_RECV))
+    recv.start() 
+    send.start()
+
 
 #------------------------------------------Server done
 
@@ -84,9 +100,11 @@ def randstring():
 
 #--->Khusus FTP
 def sendFTP(filepath,random):
+    ftp_connect()
     req_file = open(filepath,"rb")
     serverFTP.storbinary("STOR "+random,req_file)
     req_file.close()
+    ftp_close()
 #-----FTP done
 
 def register(name="Anonymous",pic=""):
@@ -161,9 +179,11 @@ def logout():
 #-----------------------Recaive Response----------------#
 #---->Khusuf FTP
 def downloadFTP(file,filename):
+    ftp_connect()
     get_file = open("cache/"+file,'wb')
     serverFTP.retrbinary("RETR "+filename,get_file.write,)
     get_file.close()
+    ftp_close()
 #---->FTP Done
 
 def initialization(response):
@@ -171,7 +191,6 @@ def initialization(response):
     TOKEN_FTP = response.content['tokenftp']
     print("User : ",USER_FTP)
     print("Token : ",TOKEN_FTP)
-    connectFTP(IP_ADDRESS,PORT_FTP,USER_FTP,TOKEN_FTP)
     
 
 def Update(response):
@@ -195,10 +214,15 @@ def file_response(response):
     print("download :",file)
 
 
+def ftp_connect():
+    connectFTP(IP_ADDRESS,PORT_FTP,USER_FTP,TOKEN_FTP)
+
+def ftp_close():
+    serverFTP.quit()
 
 def logout():
     serverFTP.quit()
 #-----------------------Recaive Response done----------------#
 
-recv.start() 
-send.start()
+
+
