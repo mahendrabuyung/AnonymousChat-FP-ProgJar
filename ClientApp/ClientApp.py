@@ -216,9 +216,8 @@ reqQueue.put(changeName(raw))
 while True:
     raw = str(input())
     reqQueue.put(sendFile("tes.py", "halo halo"))
-    raw = str(input())
-
-    reqQueue.put(downloadFTP(raw,raw))
+    # raw = str(input())
+    # reqQueue.put(downloadFTP(raw,raw))
 
 def logout():
     serverFTP.quit()
