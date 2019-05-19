@@ -97,14 +97,14 @@ def register(name="Anonymous",pic=""):
     content['profil']=pic
     content['message']='Melakukan Register Awal'
     request.content = content
-    return request.encode()
+    reqQueue.put(request.encode())
 
 def changeName(name):
     request = Req.Request(102)
     content = {}
     content['newname']=name
     request.content = content
-    return request.encode()
+    reqQueue.put(request.encode())
 
 def addGroup(group):
     request = Req.Request(103)
@@ -112,7 +112,7 @@ def addGroup(group):
     content['newgroup']=group
     content['message']='Permintaan Tambah Group'
     request.content = content
-    return request.encode()
+    reqQueue.put(request.encode())
 
 def removeGroup(group):
     request = Req.Request(104)
@@ -120,7 +120,7 @@ def removeGroup(group):
     content['delgroup']=group
     content['message']='Permintaan destroy Group'
     request.content = content
-    return request.encode()
+    reqQueue.put(request.encode())
 
 def sendMessage(message,toGroup ='public',info=None):
     request = Req.Request(201)
@@ -130,8 +130,7 @@ def sendMessage(message,toGroup ='public',info=None):
     content['message']=message
     content['info']=info
     request.content = content
-    return request.encode()
-
+    reqQueue.put(request.encode())
 
 def sendFile(file,message=None,toGroup='public',info=None):
     request = Req.Request(202) 
@@ -149,13 +148,13 @@ def sendFile(file,message=None,toGroup='public',info=None):
     content['filename']=randomName
     content['info']=info
     request.content = content
-    return request.encode()
+    reqQueue.put(request.encode())
 
 
 
 def logout():
     request = Req.Request(500)
-    return request.encode()
+    reqQueue.put(request.encode())
 
 #-----------------------Send Request done----------------#
 
@@ -195,29 +194,11 @@ def file_response(response):
     downloadFTP(file,filename)
     print("download :",file)
 
-#-----------------------Recaive Response done----------------#
 
-recv.start() 
-send.start() 
-#recv.join()
-#send.join()
-
-reqQueue.put(register('Sora'))
-reqQueue.put(addGroup("anime"))
-
-raw = str(input())
-reqQueue.put(changeName(raw))
-# reqQueue.put(logout())
-
-# raw = str(input())
-# reqQueue.put(sendMessage(raw, "anime"))
-
-
-while True:
-    raw = str(input())
-    reqQueue.put(sendFile("tes.py", "halo halo"))
-    # raw = str(input())
-    # reqQueue.put(downloadFTP(raw,raw))
 
 def logout():
     serverFTP.quit()
+#-----------------------Recaive Response done----------------#
+
+recv.start() 
+send.start()
