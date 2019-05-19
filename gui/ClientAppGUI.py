@@ -1,4 +1,5 @@
 import sys
+from functools import partial
 
 try:
     import Tkinter as tk
@@ -11,6 +12,11 @@ try:
 except ImportError:
     import tkinter.ttk as ttk
     py3 = True
+
+#txtHost = '127.0.0.1'
+#txtRecv = ''
+#txtSend = ''
+#txtFTP = ''
 
 class Welcome():
 
@@ -90,7 +96,12 @@ class Welcome():
 class Connection():
 
     def __init__(self, master):
-	
+
+        #self.txtHost = tk.StringVar()
+        #self.txtRecv = tk.StringVar()
+        #self.txtSend = tk.StringVar()
+        #self.txtFTP = tk.StringVar()
+		
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -206,7 +217,7 @@ class Connection():
         self.port_send.configure(text='''Send''')
         self.port_send.configure(width=61)
 
-        self.hostname_entry = tk.Entry(self.LabelFrameConn)
+        self.hostname_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtHost)
         self.hostname_entry.place(relx=0.343, rely=0.138, height=20
                 , relwidth=0.617, bordermode='ignore')
         self.hostname_entry.configure(background="white")
@@ -218,7 +229,7 @@ class Connection():
         self.hostname_entry.insert(0,"127.0.0.1")
         self.hostname_entry.configure(justify='center')
 
-        self.ftp_entry = tk.Entry(self.LabelFrameConn)
+        self.ftp_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtFTP)
         self.ftp_entry.place(relx=0.329, rely=0.483, height=20, relwidth=0.177
                 , bordermode='ignore')
         self.ftp_entry.configure(background="white")
@@ -247,7 +258,7 @@ class Connection():
         self.port_ftp.configure(highlightcolor="black")
         self.port_ftp.configure(text='''FTP''')
 
-        self.recv_entry = tk.Entry(self.LabelFrameConn)
+        self.recv_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtRecv)
         self.recv_entry.place(relx=0.557, rely=0.483, height=20, relwidth=0.177
                 , bordermode='ignore')
         self.recv_entry.configure(background="white")
@@ -262,7 +273,7 @@ class Connection():
         self.recv_entry.insert(0,"3000")
         self.recv_entry.configure(justify='center')
 		
-        self.send_entry = tk.Entry(self.LabelFrameConn)
+        self.send_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtSend)
         self.send_entry.place(relx=0.786, rely=0.483, height=20, relwidth=0.177
                 , bordermode='ignore')
         self.send_entry.configure(background="white")
@@ -296,10 +307,18 @@ class Connection():
         root=tk.Tk()
         root.resizable(False, False)
         GUIMain=AnonWinMain(root)
-        self.master.destroy()
+        #self.master.destroy()
+        txtHost = self.hostname_entry.get()
+        txtRecv = self.recv_entry.get()
+        txtSend = self.send_entry.get()
+        txtFTP = self.ftp_entry.get()
+        #partial(funcVarStoreConn,txtHost)
+        #lambda:funcVarStoreConn(txtHost,txtRecv,txtSend,txtFTP)
+        print (txtHost, txtRecv, txtSend, txtFTP)
 
 class AnonWinMain:
     def __init__(self,master):
+
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -400,7 +419,7 @@ class AnonWinMain:
         self.ConnectedINFO.configure(width=210)
 
         self.m_hostname = tk.Label(self.ConnectedINFO)
-        self.m_hostname.place(relx=0.0, rely=0.12, height=21, width=84
+        self.m_hostname.place(relx=0.024, rely=0.12, height=21, width=84
                 , bordermode='ignore')
         self.m_hostname.configure(activebackground="#f9f9f9")
         self.m_hostname.configure(activeforeground="black")
@@ -418,7 +437,7 @@ class AnonWinMain:
         self.me_hostname.configure(background="#31BA7F")
         self.me_hostname.configure(disabledforeground="#a3a3a3")
         self.me_hostname.configure(foreground="#ffffff")
-        self.me_hostname.configure(text='''127.0.0.1''')
+        self.me_hostname.configure(text=txtHost)
         self.me_hostname.configure(width=114)
 
         self.port_label_m = tk.LabelFrame(self.ConnectedINFO)
@@ -441,7 +460,7 @@ class AnonWinMain:
         self.em_recv.configure(foreground="#ffffff")
         self.em_recv.configure(highlightbackground="#d9d9d9")
         self.em_recv.configure(highlightcolor="black")
-        self.em_recv.configure(text='''127.0.0.1''')
+        self.em_recv.configure(text=txtRecv)
 
         self.em_send = tk.Label(self.port_label_m)
         self.em_send.place(relx=0.684, rely=0.6, height=21, width=54
@@ -453,7 +472,7 @@ class AnonWinMain:
         self.em_send.configure(foreground="#ffffff")
         self.em_send.configure(highlightbackground="#d9d9d9")
         self.em_send.configure(highlightcolor="black")
-        self.em_send.configure(text='''127.0.0.1''')
+        self.em_send.configure(text=txtSend)
 
         self.m_ftp = tk.Label(self.ConnectedINFO)
         self.m_ftp.place(relx=0.095, rely=0.48, height=21, width=54
@@ -507,7 +526,7 @@ class AnonWinMain:
         self.em_ftp.configure(foreground="#ffffff")
         self.em_ftp.configure(highlightbackground="#d9d9d9")
         self.em_ftp.configure(highlightcolor="black")
-        self.em_ftp.configure(text='''127.0.0.1''')
+        self.em_ftp.configure(text=txtFTP)
         self.em_ftp.configure(width=54)
 
         self.m_title = tk.Label(self.master)
@@ -708,6 +727,13 @@ def main():
     root=tk.Tk()
     myGUIWelcome=Welcome(root)
     root.mainloop()
+
+#def funcVarStoreConn(host):
+#    txtHost = host
+#    txtRecv = host
+#    txtSend = host
+#    txtFTP = host
+#    return print (txtHost, txtRecv, txtSend, txtFTP)
 
 if __name__ == '__main__':
     main()
