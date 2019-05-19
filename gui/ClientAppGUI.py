@@ -13,10 +13,10 @@ except ImportError:
     import tkinter.ttk as ttk
     py3 = True
 
-#txtHost = '127.0.0.1'
-#txtRecv = ''
-#txtSend = ''
-#txtFTP = ''
+txtHost = '127.0.0.1'
+txtRecv = 3000
+txtSend = 3010
+txtFTP = 3020
 
 class Welcome():
 
@@ -304,17 +304,16 @@ class Connection():
         self.master.destroy()
 
     def openMainWindow(self):
-        root=tk.Tk()
-        root.resizable(False, False)
-        GUIMain=AnonWinMain(root)
-        #self.master.destroy()
+        global txtHost, txtRecv, txtSend, txtFTP
         txtHost = self.hostname_entry.get()
         txtRecv = self.recv_entry.get()
         txtSend = self.send_entry.get()
         txtFTP = self.ftp_entry.get()
-        #partial(funcVarStoreConn,txtHost)
-        #lambda:funcVarStoreConn(txtHost,txtRecv,txtSend,txtFTP)
-        print (txtHost, txtRecv, txtSend, txtFTP)
+        #print (txtHost, txtRecv, txtSend, txtFTP)	
+        root=tk.Tk()
+        root.resizable(False, False)
+        GUIMain=AnonWinMain(root)
+        self.master.destroy()
 
 class AnonWinMain:
     def __init__(self,master):
@@ -727,13 +726,6 @@ def main():
     root=tk.Tk()
     myGUIWelcome=Welcome(root)
     root.mainloop()
-
-#def funcVarStoreConn(host):
-#    txtHost = host
-#    txtRecv = host
-#    txtSend = host
-#    txtFTP = host
-#    return print (txtHost, txtRecv, txtSend, txtFTP)
 
 if __name__ == '__main__':
     main()
