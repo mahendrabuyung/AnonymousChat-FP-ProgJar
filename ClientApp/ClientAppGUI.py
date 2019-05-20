@@ -403,7 +403,7 @@ class AnonWinMain:
         self.Entry2.insert(0,"Anonymous")
         self.Entry2.configure(justify='center')
 
-        self.m_changenm = tk.Button(self.master)
+        self.m_changenm = tk.Button(self.master, command=self.changeName)
         self.m_changenm.place(relx=0.87, rely=0.035, height=31, width=67)
         self.m_changenm.configure(activebackground="#ececec")
         self.m_changenm.configure(activeforeground="#000000")
@@ -628,6 +628,9 @@ class AnonWinMain:
         my_msg.set("")
         print (msg)
         CA.sendMessage(msg)
+
+    def changeName(self):
+        CA.changeName(self.Entry2.get())
     
 
 # The following code is added to facilitate the Scrolled widgets you specified.
