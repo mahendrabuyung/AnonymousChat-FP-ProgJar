@@ -39,6 +39,7 @@ def connectFTP(IP_ADRESS,PORT,user,token):
     serverFTP.connect(host=IP_ADRESS,port=PORT)
     serverFTP.login(user,token)
 
+newRes = None
 #Listen Message
 def recvForever():
     while True:
@@ -46,20 +47,19 @@ def recvForever():
             continue
         newRes = serverRecv.recv(2048)
         newRes = Res.decode(newRes)
-        print("code : ",newRes.code," | ",newRes.content)
-
-        if newRes.code == Res.INITIATILION_RESPONSE :
-            initialization(newRes)
-        elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
-            print('GET MESSAGE')
-        elif newRes.code == Res.RECV_FILE_RESPONSE:
-            print('GET FILE')
-            file_response(newRes)
-        elif newRes.code == Res.UPDATE_RESPONSE :
-
-            print('Will UPDATE TKINTER')
-        elif newRes.code == Res.FEEDBACK_RESPONSE:
-            print('Will FEEDBACK RESPONSE')
+        resQueue.put(newRes)
+        # if newRes.code == Res.INITIATILION_RESPONSE :
+        #     initialization(newRes)
+        # elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
+        #     print('GET MESSAGE')
+        # elif newRes.code == Res.RECV_FILE_RESPONSE:
+        #     print('GET FILE')
+        #     file_response(newRes)
+        # elif newRes.code == Res.UPDATE_RESPONSE :
+        #     print('Will UPDATE TKINTER')
+        # elif newRes.code == Res.FEEDBACK_RESPONSE:
+        #     print('Will FEEDBACK RESPONSE')
+        
 
 #Send Message
 def sendForever():

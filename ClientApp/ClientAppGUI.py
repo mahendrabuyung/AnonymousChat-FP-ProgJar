@@ -1,5 +1,9 @@
 import sys
 import ClientApp as CA
+import threading
+import Response as Res
+import Request as Req
+import queue 
 from functools import partial
 
 try:
@@ -15,9 +19,9 @@ except ImportError:
     py3 = True
 
 txtHost = '127.0.0.1'
-txtRecv = 3000
-txtSend = 3010
-txtFTP = 3020
+txtSend = CA.PORT_SEND
+txtRecv = CA.PORT_RECV
+txtFTP  = CA.PORT_FTP
 
 class Welcome():
 
@@ -227,7 +231,7 @@ class Connection():
         self.hostname_entry.configure(foreground="#000000")
         self.hostname_entry.configure(insertbackground="black")
         self.hostname_entry.configure(width=214)
-        self.hostname_entry.insert(0,"127.0.0.1")
+        self.hostname_entry.insert(0,txtHost)
         self.hostname_entry.configure(justify='center')
 
         self.ftp_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtFTP)
@@ -243,7 +247,7 @@ class Connection():
         self.ftp_entry.configure(selectbackground="#c4c4c4")
         self.ftp_entry.configure(selectforeground="black")
         self.ftp_entry.configure(width=64)
-        self.ftp_entry.insert(0,"3020")
+        self.ftp_entry.insert(0,txtFTP)
         self.ftp_entry.configure(justify='center')
 
         self.port_ftp = tk.Label(self.LabelFrameConn)
@@ -271,7 +275,7 @@ class Connection():
         self.recv_entry.configure(insertbackground="black")
         self.recv_entry.configure(selectbackground="#c4c4c4")
         self.recv_entry.configure(selectforeground="black")
-        self.recv_entry.insert(0,"3000")
+        self.recv_entry.insert(0,txtRecv)
         self.recv_entry.configure(justify='center')
 		
         self.send_entry = tk.Entry(self.LabelFrameConn)#, textvariable=txtSend)
@@ -286,7 +290,7 @@ class Connection():
         self.send_entry.configure(insertbackground="black")
         self.send_entry.configure(selectbackground="#c4c4c4")
         self.send_entry.configure(selectforeground="black")
-        self.send_entry.insert(0,"3010")
+        self.send_entry.insert(0,txtSend)
         self.send_entry.configure(justify='center')
 		
         self.WelcomeAnonChat = tk.Label(self.FrameBox)
@@ -606,30 +610,17 @@ class AnonWinMain:
         self.m_browse.configure(pady="0")
         self.m_browse.configure(text='''Browse''')
         self.m_browse.configure(width=97)
+        self.recv = threading.Thread(target=self.inloop)
+        self.recv.start()
+        self.newResponse = ''
 
-    # def recvForever():
-    #     while True:
-    #         if resQueue.empty() == queue.Empty:
-    #             continue
-    #         newRes = serverRecv.recv(2048)
-    #         newRes = Res.decode(newRes)
-    #         msg = newRes
-    #         self.Scrolledlistbox1.insert(tk.END,'jancokkk')
-            
-    #         print("code : ",newRes.code," | ",newRes.content)
+    def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
+        while True:
+            if CA.resQueue.empty() == queue.Empty:
+                continue
+            self.newResponse = CA.resQueue.get()
+            print(self.newResponse.code,self.newResponse.content)
 
-    #         if newRes.code == Res.INITIATILION_RESPONSE :
-    #             initialization(newRes)
-    #         elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
-    #             print('GET MESSAGE')
-    #         elif newRes.code == Res.RECV_FILE_RESPONSE:
-    #             print('GET FILE')
-    #             file_response(newRes)
-    #         elif newRes.code == Res.UPDATE_RESPONSE :
-
-    #             print('Will UPDATE TKINTER')
-    #         elif newRes.code == Res.FEEDBACK_RESPONSE:
-    #             print('Will FEEDBACK RESPONSE')
 
     def send(self, event=None):  # event is passed by binders.
         """Handles sending of messages."""
@@ -637,6 +628,7 @@ class AnonWinMain:
         my_msg.set("")
         print (msg)
         CA.sendMessage(msg)
+    
 
 # The following code is added to facilitate the Scrolled widgets you specified.
 class AutoScroll(object):
