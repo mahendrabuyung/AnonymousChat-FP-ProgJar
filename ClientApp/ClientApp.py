@@ -80,6 +80,7 @@ def run(address, port_send, port_recv, port_ftp):
     PORT_FTP = port_ftp
     serverSend.connect((IP_ADDRESS,PORT_SEND))
     serverRecv.connect((IP_ADDRESS,PORT_RECV))
+    register()
     recv.start() 
     send.start()
 
