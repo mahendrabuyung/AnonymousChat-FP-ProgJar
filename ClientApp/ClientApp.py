@@ -43,8 +43,6 @@ newRes = None
 #Listen Message
 def recvForever():
     while True:
-        if resQueue.empty() == queue.Empty:
-            continue
         newRes = serverRecv.recv(2048)
         newRes = Res.decode(newRes)
         resQueue.put(newRes)
