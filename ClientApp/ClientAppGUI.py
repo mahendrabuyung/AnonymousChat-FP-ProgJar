@@ -319,6 +319,9 @@ class Connection():
 
 class AnonWinMain:
     def __init__(self,master):
+        global my_msg
+        my_msg = tk.StringVar()
+        my_msg.set("Type your messages here.")
 
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
@@ -376,7 +379,7 @@ class AnonWinMain:
         self.Scrolledlistbox1.configure(selectforeground="black")
         self.Scrolledlistbox1.configure(width=10)
 
-        self.Entry1 = tk.Entry(self.master)
+        self.Entry1 = tk.Entry(self.master, textvariable=my_msg)
         self.Entry1.place(relx=0.049, rely=0.851,height=30, relwidth=0.622)
         self.Entry1.configure(background="white")
         self.Entry1.configure(disabledforeground="#a3a3a3")
@@ -577,7 +580,7 @@ class AnonWinMain:
         self.menubar = tk.Menu(self.master,font="TkMenuFont",bg=_bgcolor,fg=_fgcolor)
         self.master.configure(menu = self.menubar)
 
-        self.m_sendmain = tk.Button(self.master)
+        self.m_sendmain = tk.Button(self.master, command=self.send)
         self.m_sendmain.place(relx=0.735, rely=0.851, height=29, width=77)
         self.m_sendmain.configure(activebackground="#ececec")
         self.m_sendmain.configure(activeforeground="#000000")
@@ -589,6 +592,7 @@ class AnonWinMain:
         self.m_sendmain.configure(pady="0")
         self.m_sendmain.configure(text='''Send''')
         self.m_sendmain.configure(width=77)
+        self.m_sendmain.bind("<Return>", self.send)
 
         self.m_browse = tk.Button(self.master)
         self.m_browse.place(relx=0.84, rely=0.851, height=29, width=97)
@@ -602,6 +606,37 @@ class AnonWinMain:
         self.m_browse.configure(pady="0")
         self.m_browse.configure(text='''Browse''')
         self.m_browse.configure(width=97)
+
+    # def recvForever():
+    #     while True:
+    #         if resQueue.empty() == queue.Empty:
+    #             continue
+    #         newRes = serverRecv.recv(2048)
+    #         newRes = Res.decode(newRes)
+    #         msg = newRes
+    #         self.Scrolledlistbox1.insert(tk.END,'jancokkk')
+            
+    #         print("code : ",newRes.code," | ",newRes.content)
+
+    #         if newRes.code == Res.INITIATILION_RESPONSE :
+    #             initialization(newRes)
+    #         elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
+    #             print('GET MESSAGE')
+    #         elif newRes.code == Res.RECV_FILE_RESPONSE:
+    #             print('GET FILE')
+    #             file_response(newRes)
+    #         elif newRes.code == Res.UPDATE_RESPONSE :
+
+    #             print('Will UPDATE TKINTER')
+    #         elif newRes.code == Res.FEEDBACK_RESPONSE:
+    #             print('Will FEEDBACK RESPONSE')
+
+    def send(self, event=None):  # event is passed by binders.
+        """Handles sending of messages."""
+        msg = self.Entry1.get()
+        my_msg.set("")
+        print (msg)
+        CA.sendMessage(msg)
 
 # The following code is added to facilitate the Scrolled widgets you specified.
 class AutoScroll(object):
