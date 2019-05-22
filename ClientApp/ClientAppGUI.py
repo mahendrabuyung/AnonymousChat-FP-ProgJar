@@ -23,6 +23,8 @@ txtSend = CA.PORT_SEND
 txtRecv = CA.PORT_RECV
 txtFTP  = CA.PORT_FTP
 
+message_list = []
+
 class Welcome():
 
     def __init__(self,master):
@@ -327,6 +329,8 @@ class AnonWinMain:
         my_msg = tk.StringVar()
         my_msg.set("Type your messages here.")
 
+        self.msgcount = 0
+
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
@@ -382,6 +386,14 @@ class AnonWinMain:
         self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
         self.Scrolledlistbox1.configure(selectforeground="black")
         self.Scrolledlistbox1.configure(width=10)
+
+
+        message_list.append("halo")
+        
+
+        self.master.after(100, self.msgReceived)
+        # for item in message_list:
+        #     self.Scrolledlistbox1.insert(tk.END, item)
 
         self.Entry1 = tk.Entry(self.master, textvariable=my_msg)
         self.Entry1.place(relx=0.049, rely=0.851,height=30, relwidth=0.622)
@@ -614,12 +626,29 @@ class AnonWinMain:
         self.recv.start()
         self.newResponse = ''
 
+        self.msgReceived()
+
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
         while True:
             if CA.resQueue.empty() == queue.Empty:
                 continue
             self.newResponse = CA.resQueue.get()
-            print(self.newResponse.code,self.newResponse.content)
+            message_list.append(str(self.newResponse.code))
+            # print(message_list)
+
+    def msgReceived(self):
+        # print("asdf")
+        print(message_list)
+        for item in message_list:
+            self.Scrolledlistbox1.insert(tk.END, item)
+        message_list[:] = []
+        self.master.after(1000, self.msgReceived)
+        # if CA.resQueue.empty() == queue.Empty:
+        #     self.master.after(200, self.msgReceived)
+        # else:
+        #     self.newResponse = CA.resQueue.get()
+        #     self.Scrolledlistbox1.insert(tk.END, self.newResponse.code)
+        #     self.master.after(200, self.msgReceived)
 
 
     def send(self, event=None):  # event is passed by binders.
@@ -757,6 +786,8 @@ def _on_shiftmouse(event, widget):
 def main():
     root=tk.Tk()
     myGUIWelcome=Welcome(root)
+    # myGUIWelcome=AnonWinMain(root)
+
     root.mainloop()
 
 if __name__ == '__main__':
