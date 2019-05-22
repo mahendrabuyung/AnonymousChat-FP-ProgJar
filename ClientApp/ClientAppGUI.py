@@ -633,7 +633,12 @@ class AnonWinMain:
             if CA.resQueue.empty() == queue.Empty:
                 continue
             self.newResponse = CA.resQueue.get()
-            message_list.append(str(self.newResponse.code))
+
+            if self.newResponse.code == 211:
+                receiving_message = self.newResponse.content["sender"] + "@" + self.newResponse.content["toGroup"]+": "+self.newResponse.content["message"]
+                message_list.append(receiving_message)
+            elif self.newResponse.code == 410:
+                message_list.append(self.newResponse.code)
             # print(message_list)
 
     def msgReceived(self):
@@ -643,12 +648,6 @@ class AnonWinMain:
             self.Scrolledlistbox1.insert(tk.END, item)
         message_list[:] = []
         self.master.after(1000, self.msgReceived)
-        # if CA.resQueue.empty() == queue.Empty:
-        #     self.master.after(200, self.msgReceived)
-        # else:
-        #     self.newResponse = CA.resQueue.get()
-        #     self.Scrolledlistbox1.insert(tk.END, self.newResponse.code)
-        #     self.master.after(200, self.msgReceived)
 
 
     def send(self, event=None):  # event is passed by binders.
