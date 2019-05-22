@@ -405,34 +405,60 @@ class AnonWinMain:
         self.PNotebook1.configure(width=734)
         self.PNotebook1.configure(takefocus="")
         self.PNotebook1.configure(style=PNOTEBOOK)
-        self.PNotebook1_t0 = tk.Frame(self.PNotebook1)
-        self.PNotebook1.add(self.PNotebook1_t0, padding=3)
-        self.PNotebook1.tab(0, text="Page 1",compound="none",underline="-1",)
-        self.PNotebook1_t0.configure(background="#d9d9d9")
-        self.PNotebook1_t0.configure(highlightbackground="#d9d9d9")
-        self.PNotebook1_t0.configure(highlightcolor="black")
-        self.PNotebook1_t1 = tk.Frame(self.PNotebook1)
-        self.PNotebook1.add(self.PNotebook1_t1, padding=3)
-        self.PNotebook1.tab(1, text="Page 2",compound="none",underline="-1",)
-        self.PNotebook1_t1.configure(background="#d9d9d9")
-        self.PNotebook1_t1.configure(highlightbackground="#d9d9d9")
-        self.PNotebook1_t1.configure(highlightcolor="black")
-
-        self.Scrolledlistbox1 = ScrolledListBox(self.PNotebook1_t0)
-        self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
-                , relwidth=1.001)
-        self.Scrolledlistbox1.configure(background="white")
-        self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
-        self.Scrolledlistbox1.configure(font="TkFixedFont")
-        self.Scrolledlistbox1.configure(foreground="black")
-        self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
-        self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
-        self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
-        self.Scrolledlistbox1.configure(selectforeground="black")
-        self.Scrolledlistbox1.configure(width=10)
+        #self.PNotebook1_t0 = tk.Frame(self.PNotebook1)
+        #self.PNotebook1.add(self.PNotebook1_t0, padding=3)
+        #self.PNotebook1.tab(0, text="Page 1",compound="none",underline="-1",)
+        #self.PNotebook1_t0.configure(background="#d9d9d9")
+        #self.PNotebook1_t0.configure(highlightbackground="#d9d9d9")
+        #self.PNotebook1_t0.configure(highlightcolor="black")
+        #self.PNotebook1_t1 = tk.Frame(self.PNotebook1)
+        #self.PNotebook1.add(self.PNotebook1_t1, padding=3)
+        #self.PNotebook1.tab(1, text="Page 2",compound="none",underline="-1",)
+        #self.PNotebook1_t1.configure(background="#d9d9d9")
+        #self.PNotebook1_t1.configure(highlightbackground="#d9d9d9")
+        #self.PNotebook1_t1.configure(highlightcolor="black")
         self.PNotebook1.bind('<Button-1>',_button_press)
         self.PNotebook1.bind('<ButtonRelease-1>',_button_release)
         self.PNotebook1.bind('<Motion>',_mouse_over)
+
+        tab_names = ["Public","Privacy","Papega"]
+
+        tabs = {}
+		#Ini udah bisa ngebuat tab loopnya, nanti nama roomnya tinggal dimasukan ke arraynya tab_names?
+		#Tinggal buat scrolledlistboxnya... gimana caranya ngerubah self.Scrolledlistbox1 jadi self.Scrolledlistbox[i]? biar dia start dari 1 - banyaknya array.
+		#Sama nanti pas insertnya tinggal disesuain sama nama roomnya.
+        for tab_name in tab_names:
+            tab = tk.Frame(self.PNotebook1)
+            self.PNotebook1.add(tab, text=tab_name)
+            tabs[tab_name] = tab
+            tabs[tab_name].configure(background="#d9d9d9")
+            tabs[tab_name].configure(highlightbackground="#d9d9d9")
+            tabs[tab_name].configure(highlightcolor="black")
+            self.Scrolledlistbox1 = ScrolledListBox(tabs[tab_name])
+            self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
+                    , relwidth=1.001)
+            self.Scrolledlistbox1.configure(background="white")
+            self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
+            self.Scrolledlistbox1.configure(font="TkFixedFont")
+            self.Scrolledlistbox1.configure(foreground="black")
+            self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
+            self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
+            self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
+            self.Scrolledlistbox1.configure(selectforeground="black")
+            self.Scrolledlistbox1.configure(width=10)
+
+        #self.Scrolledlistbox1 = ScrolledListBox(tabs['Public'])
+        #self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
+        #        , relwidth=1.001)
+        #self.Scrolledlistbox1.configure(background="white")
+        #self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
+        #self.Scrolledlistbox1.configure(font="TkFixedFont")
+        #self.Scrolledlistbox1.configure(foreground="black")
+        #self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
+        #self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
+        #self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
+        #self.Scrolledlistbox1.configure(selectforeground="black")
+        #self.Scrolledlistbox1.configure(width=10)
 
         #message_list.append("halo")
         
