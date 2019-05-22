@@ -352,29 +352,73 @@ class AnonWinMain:
         self.master.title("Anonymous Chat")
         self.master.configure(background="#31BA7F")
 
-        self.style.configure('TNotebook.Tab', background=_bgcolor)
-        self.style.configure('TNotebook.Tab', foreground=_fgcolor)
-        self.style.map('TNotebook.Tab', background=
-            [('selected', _compcolor), ('active',_ana2color)])
-        self.TNotebook1 = ttk.Notebook(self.master)
-        self.TNotebook1.place(relx=0.049, rely=0.243, relheight=0.583
-                , relwidth=0.906)
-        self.TNotebook1.configure(width=734)
-        self.TNotebook1.configure(takefocus="")
-        self.TNotebook1_t0 = tk.Frame(self.TNotebook1)
-        self.TNotebook1.add(self.TNotebook1_t0, padding=3)
-        self.TNotebook1.tab(0, text="Page 1",compound="left",underline="-1",)
-        self.TNotebook1_t0.configure(background="#d9d9d9")
-        self.TNotebook1_t0.configure(highlightbackground="#d9d9d9")
-        self.TNotebook1_t0.configure(highlightcolor="black")
-        self.TNotebook1_t1 = tk.Frame(self.TNotebook1)
-        self.TNotebook1.add(self.TNotebook1_t1, padding=3)
-        self.TNotebook1.tab(1, text="Page 2",compound="left",underline="-1",)
-        self.TNotebook1_t1.configure(background="#d9d9d9")
-        self.TNotebook1_t1.configure(highlightbackground="#d9d9d9")
-        self.TNotebook1_t1.configure(highlightcolor="black")
+        self.images = (
 
-        self.Scrolledlistbox1 = ScrolledListBox(self.TNotebook1_t0)
+         tk.PhotoImage("img_close", data='''R0lGODlhDAAMAIQUADIyMjc3Nzk5OT09PT
+                 8/P0JCQkVFRU1NTU5OTlFRUVZWVmBgYGF hYWlpaXt7e6CgoLm5ucLCwszMzNbW
+                 1v//////////////////////////////////// ///////////yH5BAEKAB8ALA
+                 AAAAAMAAwAAAUt4CeOZGmaA5mSyQCIwhCUSwEIxHHW+ fkxBgPiBDwshCWHQfc5
+                 KkoNUtRHpYYAADs= '''),
+
+         tk.PhotoImage("img_closeactive", data='''R0lGODlhDAAMAIQcALwuEtIzFL46
+                 INY0Fdk2FsQ8IdhAI9pAIttCJNlKLtpLL9pMMMNTP cVTPdpZQOBbQd60rN+1rf
+                 Czp+zLxPbMxPLX0vHY0/fY0/rm4vvx8Pvy8fzy8P//////// ///////yH5BAEK
+                 AB8ALAAAAAAMAAwAAAVHYLQQZEkukWKuxEgg1EPCcilx24NcHGYWFhx P0zANBE
+                 GOhhFYGSocTsax2imDOdNtiez9JszjpEg4EAaA5jlNUEASLFICEgIAOw== '''),
+
+         tk.PhotoImage("img_closepressed", data='''R0lGODlhDAAMAIQeAJ8nD64qELE
+                 rELMsEqIyG6cyG7U1HLY2HrY3HrhBKrlCK6pGM7lD LKtHM7pKNL5MNtiViNaon
+                 +GqoNSyq9WzrNyyqtuzq+O0que/t+bIwubJw+vJw+vTz+zT z////////yH5BAE
+                 KAB8ALAAAAAAMAAwAAAVJIMUMZEkylGKuwzgc0kPCcgl123NcHWYW Fs6Gp2mYB
+                 IRgR7MIrAwVDifjWO2WwZzpxkxyfKVCpImMGAeIgQDgVLMHikmCRUpMQgA7 ''')
+        )
+
+        self.style.element_create("close", "image", "img_close",
+               ("active", "pressed", "!disabled", "img_closepressed"),
+               ("active", "alternate", "!disabled",
+               "img_closeactive"), border=8, sticky='')
+
+        self.style.layout("ClosetabNotebook", [("ClosetabNotebook.client",
+                                     {"sticky": "nswe"})])
+        self.style.layout("ClosetabNotebook.Tab", [
+            ("ClosetabNotebook.tab",
+              { "sticky": "nswe",
+                "children": [
+                    ("ClosetabNotebook.padding", {
+                        "side": "top",
+                        "sticky": "nswe",
+                        "children": [
+                            ("ClosetabNotebook.focus", {
+                                "side": "top",
+                                "sticky": "nswe",
+                                "children": [
+                                    ("ClosetabNotebook.label", {"side":
+                                      "left", "sticky": ''}),
+                                    ("ClosetabNotebook.close", {"side":
+                                        "left", "sticky": ''}),]})]})]})])
+
+        PNOTEBOOK = "ClosetabNotebook" 
+
+        self.PNotebook1 = ttk.Notebook(self.master)
+        self.PNotebook1.place(relx=0.049, rely=0.243, relheight=0.583
+                , relwidth=0.906)
+        self.PNotebook1.configure(width=734)
+        self.PNotebook1.configure(takefocus="")
+        self.PNotebook1.configure(style=PNOTEBOOK)
+        self.PNotebook1_t0 = tk.Frame(self.PNotebook1)
+        self.PNotebook1.add(self.PNotebook1_t0, padding=3)
+        self.PNotebook1.tab(0, text="Page 1",compound="none",underline="-1",)
+        self.PNotebook1_t0.configure(background="#d9d9d9")
+        self.PNotebook1_t0.configure(highlightbackground="#d9d9d9")
+        self.PNotebook1_t0.configure(highlightcolor="black")
+        self.PNotebook1_t1 = tk.Frame(self.PNotebook1)
+        self.PNotebook1.add(self.PNotebook1_t1, padding=3)
+        self.PNotebook1.tab(1, text="Page 2",compound="none",underline="-1",)
+        self.PNotebook1_t1.configure(background="#d9d9d9")
+        self.PNotebook1_t1.configure(highlightbackground="#d9d9d9")
+        self.PNotebook1_t1.configure(highlightcolor="black")
+
+        self.Scrolledlistbox1 = ScrolledListBox(self.PNotebook1_t0)
         self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
                 , relwidth=1.001)
         self.Scrolledlistbox1.configure(background="white")
@@ -386,7 +430,9 @@ class AnonWinMain:
         self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
         self.Scrolledlistbox1.configure(selectforeground="black")
         self.Scrolledlistbox1.configure(width=10)
-
+        self.PNotebook1.bind('<Button-1>',_button_press)
+        self.PNotebook1.bind('<ButtonRelease-1>',_button_release)
+        self.PNotebook1.bind('<Motion>',_mouse_over)
 
         #message_list.append("halo")
         
@@ -662,6 +708,39 @@ class AnonWinMain:
     def changeName(self):
         CA.changeName(self.Entry2.get())
     
+# The following code is add to handle mouse events with the close icons
+# in PNotebooks widgets.
+def _button_press(event):
+    widget = event.widget
+    element = widget.identify(event.x, event.y)
+    if "close" in element:
+        index = widget.index("@%d,%d" % (event.x, event.y))
+        widget.state(['pressed'])
+        widget._active = index
+
+def _button_release(event):
+    widget = event.widget
+    if not widget.instate(['pressed']):
+            return
+    element = widget.identify(event.x, event.y)
+    try:
+        index = widget.index("@%d,%d" % (event.x, event.y))
+    except TclError:
+        pass
+    if "close" in element and widget._active == index:
+        widget.forget(index)
+        widget.event_generate("<<NotebookTabClosed>>")
+
+    widget.state(['!pressed'])
+    widget._active = None
+
+def _mouse_over(event):
+    widget = event.widget
+    element = widget.identify(event.x, event.y)
+    if "close" in element:
+        widget.state(['alternate'])
+    else:
+        widget.state(['!alternate'])
 
 # The following code is added to facilitate the Scrolled widgets you specified.
 class AutoScroll(object):
