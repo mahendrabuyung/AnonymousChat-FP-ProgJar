@@ -388,7 +388,7 @@ class AnonWinMain:
         self.Scrolledlistbox1.configure(width=10)
 
 
-        message_list.append("halo")
+        #message_list.append("halo")
         
 
         self.master.after(100, self.msgReceived)
@@ -403,6 +403,7 @@ class AnonWinMain:
         self.Entry1.configure(foreground="#000000")
         self.Entry1.configure(insertbackground="black")
         self.Entry1.configure(width=504)
+        self.Entry1.bind("<Return>", self.send)
 
         self.Entry2 = tk.Entry(self.master)
         self.Entry2.place(relx=0.593, rely=0.035,height=30, relwidth=0.264)
@@ -637,13 +638,13 @@ class AnonWinMain:
             if self.newResponse.code == 211:
                 receiving_message = self.newResponse.content["sender"] + "@" + self.newResponse.content["toGroup"]+": "+self.newResponse.content["message"]
                 message_list.append(receiving_message)
-            elif self.newResponse.code == 410:
-                message_list.append(self.newResponse.code)
+            #elif self.newResponse.code == 410:
+            #    message_list.append(self.newResponse.code)
             # print(message_list)
 
     def msgReceived(self):
         # print("asdf")
-        print(message_list)
+        # print(message_list)
         for item in message_list:
             self.Scrolledlistbox1.insert(tk.END, item)
         message_list[:] = []
@@ -656,6 +657,7 @@ class AnonWinMain:
         my_msg.set("")
         print (msg)
         CA.sendMessage(msg)
+        message_list.append("You: " + msg)
 
     def changeName(self):
         CA.changeName(self.Entry2.get())
