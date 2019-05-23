@@ -43,7 +43,6 @@ class MainWindow(tk.Frame):
                 button['widget'].config(font=("Courier", 50))
                 button['widget'].grid(row=roww,column=coll)
                 listbutton.append(button)
-            
         emojiFrame.pack(expand=True,fill="both")
 
     def addstring(self,p):
