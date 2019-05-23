@@ -838,7 +838,9 @@ class AnonWinMain:
     def sendFileFTP(self):
         global currentlyactivetab
         if self.e_sendfile.get() != "":
-            CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), currentlyactivetab)
+            pathfile = self.e_sendfile.get()
+            filename = os.path.basename(pathfile)
+            CA.sendFile(pathfile, self.Entry1.get() + "(Had sent "+filename+")", currentlyactivetab)
 
     def fileBrowse(self):
         print('now')
