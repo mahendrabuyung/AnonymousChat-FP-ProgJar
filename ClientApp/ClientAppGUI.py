@@ -651,7 +651,7 @@ class AnonWinMain:
         self.e_addroom.configure(insertbackground="black")
         self.e_addroom.configure(width=174)
 
-        self.CreateRoom = tk.Button(self.master)
+        self.CreateRoom = tk.Button(self.master, command=self.createGroup)
         self.CreateRoom.place(relx=0.309, rely=0.913, height=34, width=145)
         self.CreateRoom.configure(activebackground="#ececec")
         self.CreateRoom.configure(activeforeground="#000000")
@@ -793,6 +793,9 @@ class AnonWinMain:
 
     def changeName(self):
         CA.changeName(self.Entry2.get())
+
+    def createGroup(self):
+        CA.addGroup(self.e_addroom.get())
     
 
 
