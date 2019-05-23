@@ -424,7 +424,7 @@ class AnonWinMain:
         self.PNotebook1.bind('<Motion>',_mouse_over)
 
 
-        tabs = {}
+        self.tabs = {}
         self.Scrolledlistbox1 = {}
 		#Ini udah bisa ngebuat tab loopnya, nanti nama roomnya tinggal dimasukan ke arraynya tab_names?
 		#Tinggal buat scrolledlistboxnya... gimana caranya ngerubah self.Scrolledlistbox1 jadi self.Scrolledlistbox[i]? biar dia start dari 1 - banyaknya array.
@@ -432,11 +432,11 @@ class AnonWinMain:
         for tab_name in tab_names:
             tab = tk.Frame(self.PNotebook1)
             self.PNotebook1.add(tab, text=tab_name)
-            tabs[tab_name] = tab
-            tabs[tab_name].configure(background="#d9d9d9")
-            tabs[tab_name].configure(highlightbackground="#d9d9d9")
-            tabs[tab_name].configure(highlightcolor="black")
-            self.Scrolledlistbox1[tab_name] = ScrolledListBox(tabs[tab_name])
+            self.tabs[tab_name] = tab
+            self.tabs[tab_name].configure(background="#d9d9d9")
+            self.tabs[tab_name].configure(highlightbackground="#d9d9d9")
+            self.tabs[tab_name].configure(highlightcolor="black")
+            self.Scrolledlistbox1[tab_name] = ScrolledListBox(self.tabs[tab_name])
             self.Scrolledlistbox1[tab_name].place(relx=0.0, rely=0.0, relheight=1.003
                     , relwidth=1.001)
             self.Scrolledlistbox1[tab_name].configure(background="white")
@@ -687,7 +687,7 @@ class AnonWinMain:
         self.recv = threading.Thread(target=self.inloop)
         self.recv.start()
         self.newResponse = ''
-
+        self.AddingGroupTab("asu")
         self.msgReceived()
 
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
@@ -721,6 +721,27 @@ class AnonWinMain:
         message_list[:] = []
         message_list_toGroup[:] = []
         self.master.after(100, self.msgReceived)
+
+    def AddingGroupTab(self, tab_name):
+        tab = tk.Frame(self.PNotebook1)
+        self.PNotebook1.add(tab, text=tab_name)
+        self.tabs[tab_name] = tab
+        self.tabs[tab_name].configure(background="#d9d9d9")
+        self.tabs[tab_name].configure(highlightbackground="#d9d9d9")
+        self.tabs[tab_name].configure(highlightcolor="black")
+        self.Scrolledlistbox1[tab_name] = ScrolledListBox(self.tabs[tab_name])
+        self.Scrolledlistbox1[tab_name].place(relx=0.0, rely=0.0, relheight=1.003
+                    , relwidth=1.001)
+        self.Scrolledlistbox1[tab_name].configure(background="white")
+        self.Scrolledlistbox1[tab_name].configure(disabledforeground="#a3a3a3")
+        self.Scrolledlistbox1[tab_name].configure(font="TkFixedFont")
+        self.Scrolledlistbox1[tab_name].configure(foreground="black")
+        self.Scrolledlistbox1[tab_name].configure(highlightbackground="#d9d9d9")
+        self.Scrolledlistbox1[tab_name].configure(highlightcolor="#d9d9d9")
+        self.Scrolledlistbox1[tab_name].configure(selectbackground="#c4c4c4")
+        self.Scrolledlistbox1[tab_name].configure(selectforeground="black")
+        self.Scrolledlistbox1[tab_name].configure(width=10)
+
 
 
     def send(self, event=None):  # event is passed by binders.
