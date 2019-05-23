@@ -5,6 +5,7 @@ import Response as Res
 import Request as Req
 import queue 
 import emoji
+import emo
 import os
 import re
 from functools import partial
@@ -645,7 +646,7 @@ class AnonWinMain:
         self.m_title2.configure(text='''Enjoy the sensation of chatting with your privacy''')
         self.m_title2.configure(width=324)
 
-        self.m_emot = tk.Button(self.master)
+        self.m_emot = tk.Button(self.master, command=self.emoji_window)
         self.m_emot.place(relx=0.772, rely=0.851, height=30, width=35)
         self.m_emot.configure(activebackground="#ececec")
         self.m_emot.configure(activeforeground="#000000")
@@ -844,8 +845,25 @@ class AnonWinMain:
         p = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Image files","*.jpg;*.png;*.gif"),("Document files","*.pdf;*.doc,;*.docx"),("all files", "*.*")))
         print(os.path.isfile(p))
         path_msg.set(p)
-        print(p)  
+        print(p)
 
+    def emoji_window(self):
+        t = tk.Toplevel(self.master)
+        emojiFrame = tk.Frame(t)
+        listbutton = []
+        for coll in range(4):
+            for roww in range ((int(len(emo.label)/4))):
+                button = {}
+                button['val'] = rendertext(emo.label[coll*(roww-1)+roww])
+                button['text'] = emo.label[coll*(roww-1)+roww]
+                button['widget'] = tk.Button(emojiFrame,fg="black",text=rendertext(button['val']),command=partial(self.addtosend,button['text']))
+                button['widget'].config(font=("Courier", 50))
+                button['widget'].grid(row=roww,column=coll)
+                listbutton.append(button)
+        emojiFrame.pack(expand=True,fill="both")
+
+    def addtosend(self,val):
+        my_msg.set(my_msg.get()+val)
 
 # The following code is add to handle mouse events with the close icons
 # in PNotebooks widgets.
