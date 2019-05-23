@@ -4,12 +4,17 @@ import threading
 import Response as Res
 import Request as Req
 import queue 
+import os
 from functools import partial
 
 try:
     import Tkinter as tk
+    from Tkinter import filedialog
+    from Tkinter import *    
 except ImportError:
     import tkinter as tk
+    from tkinter import filedialog
+    from tkinter import *
 
 try:
     import ttk
@@ -26,8 +31,6 @@ txtFTP  = CA.PORT_FTP
 message_list = []
 message_list_toGroup = []
 tab_names = ["public", "monkas"]
-
-currentlyactivetab = ""
 
 class Welcome():
 
@@ -329,9 +332,11 @@ class Connection():
 
 class AnonWinMain:
     def __init__(self,master):
-        global my_msg
+        global my_msg, path_msg
         my_msg = tk.StringVar()
         my_msg.set("Type your messages here.")
+        path_msg = tk.StringVar()
+        path_msg.set("")
 
         self.msgcount = 0
 
@@ -450,7 +455,6 @@ class AnonWinMain:
             self.Scrolledlistbox1[tab_name].configure(selectbackground="#c4c4c4")
             self.Scrolledlistbox1[tab_name].configure(selectforeground="black")
             self.Scrolledlistbox1[tab_name].configure(width=10)
-
 
         #message_list.append("halo")
         
@@ -667,7 +671,7 @@ class AnonWinMain:
         self.CreateRoom.configure(text='''Add Room''')
         self.CreateRoom.configure(width=147)
 
-        self.e_sendfile = tk.Entry(self.master)
+        self.e_sendfile = tk.Entry(self.master,textvariable=path_msg)
         self.e_sendfile.place(relx=0.5, rely=0.911,height=34, relwidth=0.253)
         self.e_sendfile.configure(background="white")
         self.e_sendfile.configure(disabledforeground="#a3a3a3")
@@ -678,9 +682,22 @@ class AnonWinMain:
         self.e_sendfile.configure(insertbackground="black")
         self.e_sendfile.configure(selectbackground="#c4c4c4")
         self.e_sendfile.configure(selectforeground="black")
-
+        self.e_sendfile.configure(state='readonly')
+	
+        self.b_browsefile = tk.Button(self.master, command=self.fileBrowse)
+        self.b_browsefile.place(relx=0.760, rely=0.913, height=34, width=78)
+        self.b_browsefile.configure(activebackground="#ececec")
+        self.b_browsefile.configure(activeforeground="#000000")
+        self.b_browsefile.configure(background="#d9d9d9")
+        self.b_browsefile.configure(disabledforeground="#a3a3a3")
+        self.b_browsefile.configure(foreground="#000000")
+        self.b_browsefile.configure(highlightbackground="#d9d9d9")
+        self.b_browsefile.configure(highlightcolor="black")
+        self.b_browsefile.configure(pady="0")
+        self.b_browsefile.configure(text='''Browse''')
+		
         self.b_sendfile = tk.Button(self.master)
-        self.b_sendfile.place(relx=0.765, rely=0.913, height=34, width=156)
+        self.b_sendfile.place(relx=0.860, rely=0.913, height=34, width=78)
         self.b_sendfile.configure(activebackground="#ececec")
         self.b_sendfile.configure(activeforeground="#000000")
         self.b_sendfile.configure(background="#d9d9d9")
@@ -710,12 +727,9 @@ class AnonWinMain:
         self.recv = threading.Thread(target=self.inloop)
         self.recv.start()
         self.newResponse = ''
-        global currentlyactivetab 
-        currentlyactivetab = "public"
         self.AddingGroupTab("asu")
         self.msgReceived()
         self.UpdateTabs()
-        CA.addGroup("monkas")
 
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
         while True:
@@ -733,6 +747,9 @@ class AnonWinMain:
                 message_list.append(receiving_message)
                 message_list_toGroup.append("all")
 
+            #elif self.newResponse.code == 410:
+            #    message_list.append(self.newResponse.code)
+            # print(message_list)
 
     def msgReceived(self):
 
@@ -750,7 +767,6 @@ class AnonWinMain:
     def AddingGroupTab(self, tab_name):
         tab = tk.Frame(self.PNotebook1)
         tab_names.append(tab_name)
-        CA.addGroup(tab_name)
         self.PNotebook1.add(tab, text=tab_name)
         self.tabs[tab_name] = tab
         self.tabs[tab_name].configure(background="#d9d9d9")
@@ -783,7 +799,7 @@ class AnonWinMain:
         for item in maudidel:
             del self.Scrolledlistbox1[item]
             del self.tabs[item]
-            CA.removeGroup(item)
+
         self.master.after(100, self.UpdateTabs)
 
 
@@ -792,9 +808,7 @@ class AnonWinMain:
         msg = self.Entry1.get()
         my_msg.set("")
         print (msg)
-        # CA.sendMessage(msg)
-        global currentlyactivetab
-        CA.sendMessage(msg, currentlyactivetab)
+        CA.sendMessage(msg)
         # message_list.append("You: " + msg)
 
     def changeName(self):
@@ -802,8 +816,13 @@ class AnonWinMain:
 
     def createGroup(self):
         CA.addGroup(self.e_addroom.get())
-        self.AddingGroupTab(self.e_addroom.get())
-    
+
+    def fileBrowse(self):
+        print('now')
+        p = filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Image files","*.jpg;*.png;*.gif"),("Document files","*.pdf;*.doc,;*.docx"),("all files", "*.*")))
+        print(os.path.isfile(p))
+        path_msg.set(p)
+        print(p)  
 
 
 # The following code is add to handle mouse events with the close icons
@@ -815,11 +834,7 @@ def _button_press(event):
         index = widget.index("@%d,%d" % (event.x, event.y))
         widget.state(['pressed'])
         widget._active = index
-    else:
-        index = widget.index("@%d,%d" % (event.x, event.y))
-        terpilih = event.widget.tab(index, "text")
-        global currentlyactivetab
-        currentlyactivetab = terpilih
+        print(event.widget.tab(index, "text"))
 
 def _button_release(event):
     widget = event.widget
@@ -833,8 +848,10 @@ def _button_release(event):
     if "close" in element and widget._active == index:
         closed = event.widget.tab(index, "text")
         tab_names.remove(closed)
+        print(tab_names)
         widget.forget(index)
         widget.event_generate("<<NotebookTabClosed>>")
+
     widget.state(['!pressed'])
     widget._active = None
 
