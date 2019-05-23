@@ -76,6 +76,8 @@ send = threading.Thread(target=sendForever)#sendEveryResponse
 
 
 def run(address, port_send, port_recv, port_ftp):
+    global IP_ADDRESS,PORT_SEND,PORT_RECV,PORT_FTP
+
     IP_ADDRESS = address
     PORT_SEND = port_send
     PORT_RECV = port_recv
@@ -227,6 +229,12 @@ def file_response(response):
 def ftp_connect():
     global USER_FTP
     global TOKEN_FTP
+    global PORT_FTP
+    global IP_ADDRESS
+    print(USER_FTP)
+    print(IP_ADDRESS)
+    print(PORT_FTP)
+    print(TOKEN_FTP)
     connectFTP(IP_ADDRESS,PORT_FTP,USER_FTP,TOKEN_FTP)
 
 def ftp_close():
