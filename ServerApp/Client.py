@@ -188,7 +188,6 @@ class Client(threading.Thread):
             if friend.is_alive():
                 if toGroup in friend.myGroup:
                     if friend == self :
-
                         newResponse2= Res.Response(211)
                         content2 = {}
                         content2['sender'] = "YOU"

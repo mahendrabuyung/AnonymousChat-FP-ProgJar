@@ -45,18 +45,20 @@ def recvForever():
     while True:
         newRes = serverRecv.recv(2048)
         newRes = Res.decode(newRes)
-        resQueue.put(newRes)
-        # if newRes.code == Res.INITIATILION_RESPONSE :
-        #     initialization(newRes)
+        print(newRes.code)
+        if newRes.code == Res.INITIATILION_RESPONSE :
+            initialization(newRes)
+        elif newRes.code == Res.RECV_FILE_RESPONSE:
+            print('GET FILE')
+            file_response(newRes)
         # elif newRes.code == Res.RECV_MESSAGE_RESPONSE:
         #     print('GET MESSAGE')
-        # elif newRes.code == Res.RECV_FILE_RESPONSE:
-        #     print('GET FILE')
-        #     file_response(newRes)
         # elif newRes.code == Res.UPDATE_RESPONSE :
         #     print('Will UPDATE TKINTER')
         # elif newRes.code == Res.FEEDBACK_RESPONSE:
         #     print('Will FEEDBACK RESPONSE')
+
+        resQueue.put(newRes)
         
 
 #Send Message
@@ -154,7 +156,14 @@ def sendFile(file,message=None,toGroup='public',info=None):
 
     title,extension = os.path.splitext(file)
     randomName = randstring()+extension
-    OriginName = title+extension
+    OriginName = os.path.basename(file)
+
+    print("------------------")
+    print(title)
+    print(extension)
+    print(OriginName)
+    print("------------------")
+    
     sendFTP(file,randomName)
     
     content = {}
@@ -186,6 +195,8 @@ def downloadFTP(file,filename):
 #---->FTP Done
 
 def initialization(response):
+    global USER_FTP
+    global TOKEN_FTP
     USER_FTP =  response.content['userftp']
     TOKEN_FTP = response.content['tokenftp']
     print("User : ",USER_FTP)
@@ -214,6 +225,8 @@ def file_response(response):
 
 
 def ftp_connect():
+    global USER_FTP
+    global TOKEN_FTP
     connectFTP(IP_ADDRESS,PORT_FTP,USER_FTP,TOKEN_FTP)
 
 def ftp_close():

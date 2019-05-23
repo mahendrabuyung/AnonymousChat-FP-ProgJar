@@ -697,7 +697,7 @@ class AnonWinMain:
         self.b_browsefile.configure(pady="0")
         self.b_browsefile.configure(text='''Browse''')
 		
-        self.b_sendfile = tk.Button(self.master)
+        self.b_sendfile = tk.Button(self.master, command=self.sendFileFTP)
         self.b_sendfile.place(relx=0.860, rely=0.913, height=34, width=78)
         self.b_sendfile.configure(activebackground="#ececec")
         self.b_sendfile.configure(activeforeground="#000000")
@@ -826,7 +826,8 @@ class AnonWinMain:
         self.AddingGroupTab(self.e_addroom.get())
 
     def sendFileFTP(self):
-        CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), )
+        global currentlyactivetab
+        CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), currentlyactivetab)
 
     def fileBrowse(self):
         print('now')
