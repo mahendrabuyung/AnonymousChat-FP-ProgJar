@@ -31,6 +31,7 @@ txtFTP  = CA.PORT_FTP
 message_list = []
 message_list_toGroup = []
 tab_names = ["public", "monkas"]
+currentlyactivetab = ""
 
 class Welcome():
 
@@ -727,9 +728,12 @@ class AnonWinMain:
         self.recv = threading.Thread(target=self.inloop)
         self.recv.start()
         self.newResponse = ''
+        global currentlyactivetab 
+        currentlyactivetab = "public"
         self.AddingGroupTab("asu")
         self.msgReceived()
         self.UpdateTabs()
+        CA.addGroup("monkas")
 
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
         while True:
@@ -767,6 +771,7 @@ class AnonWinMain:
     def AddingGroupTab(self, tab_name):
         tab = tk.Frame(self.PNotebook1)
         tab_names.append(tab_name)
+        CA.addGroup(tab_name)
         self.PNotebook1.add(tab, text=tab_name)
         self.tabs[tab_name] = tab
         self.tabs[tab_name].configure(background="#d9d9d9")
@@ -799,7 +804,7 @@ class AnonWinMain:
         for item in maudidel:
             del self.Scrolledlistbox1[item]
             del self.tabs[item]
-
+            CA.removeGroup(item)
         self.master.after(100, self.UpdateTabs)
 
 
@@ -808,7 +813,9 @@ class AnonWinMain:
         msg = self.Entry1.get()
         my_msg.set("")
         print (msg)
-        CA.sendMessage(msg)
+        # CA.sendMessage(msg)
+        global currentlyactivetab
+        CA.sendMessage(msg, currentlyactivetab)
         # message_list.append("You: " + msg)
 
     def changeName(self):
@@ -816,6 +823,10 @@ class AnonWinMain:
 
     def createGroup(self):
         CA.addGroup(self.e_addroom.get())
+        self.AddingGroupTab(self.e_addroom.get())
+
+    def sendFileFTP(self):
+        CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), )
 
     def fileBrowse(self):
         print('now')
@@ -835,6 +846,11 @@ def _button_press(event):
         widget.state(['pressed'])
         widget._active = index
         print(event.widget.tab(index, "text"))
+    else:
+        index = widget.index("@%d,%d" % (event.x, event.y))
+        terpilih = event.widget.tab(index, "text")
+        global currentlyactivetab
+        currentlyactivetab = terpilih
 
 def _button_release(event):
     widget = event.widget
