@@ -96,14 +96,18 @@ class Client(threading.Thread):
                     print("-------------------------Change Name-------------")
                     if(self.name!=None):
                         oldName = self.name
-                        print('done semua')
                     else:
                         oldName = ""
                     newname = newRequest.content['newname']
                     self.name = newname
                     print('dari :',oldName)
                     print('to :',self.name)
-                    self.sendMessage(self.successMessage())
+
+                    newResponse = Res.Response(310)
+                    content = {}
+                    content['message'] = "Name changed to "+ self.name
+                    newResponse.content = content
+                    self.sendMessage(newResponse.encode())
                     
                     print("--done name--")
 
@@ -165,7 +169,6 @@ class Client(threading.Thread):
     def broadcast(self,message,file=None,filename=None,toGroup='public'): 
         #fungsi ini bertugas melakukan broadcasting pesan atau file
 
-        print(toGroup)
 
         newResponse = Res.Response(211)
         content = {}
@@ -181,12 +184,18 @@ class Client(threading.Thread):
         content['toGroup'] = toGroup
 
         newResponse.content = content
-        print('here')
         for friend in self.listfriends:
             if friend.is_alive():
                 if toGroup in friend.myGroup:
                     if friend == self :
-                        self.sendMessage(self.successMessage())
+
+                        newResponse2= Res.Response(211)
+                        content2 = {}
+                        content2['sender'] = "YOU"
+                        content2['message'] = message
+                        content2['toGroup'] = toGroup
+                        newResponse2.content = content2
+                        self.sendMessage(newResponse.encode())
                     else :
                         friend.sendMessage(newResponse.encode())
 

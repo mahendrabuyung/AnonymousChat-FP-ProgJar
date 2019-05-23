@@ -24,6 +24,8 @@ txtRecv = CA.PORT_RECV
 txtFTP  = CA.PORT_FTP
 
 message_list = []
+message_list_toGroup = []
+tab_names = ["public", "monkas"]
 
 class Welcome():
 
@@ -421,9 +423,9 @@ class AnonWinMain:
         self.PNotebook1.bind('<ButtonRelease-1>',_button_release)
         self.PNotebook1.bind('<Motion>',_mouse_over)
 
-        tab_names = ["Public","Privacy","Papega"]
 
         tabs = {}
+        self.Scrolledlistbox1 = {}
 		#Ini udah bisa ngebuat tab loopnya, nanti nama roomnya tinggal dimasukan ke arraynya tab_names?
 		#Tinggal buat scrolledlistboxnya... gimana caranya ngerubah self.Scrolledlistbox1 jadi self.Scrolledlistbox[i]? biar dia start dari 1 - banyaknya array.
 		#Sama nanti pas insertnya tinggal disesuain sama nama roomnya.
@@ -434,31 +436,18 @@ class AnonWinMain:
             tabs[tab_name].configure(background="#d9d9d9")
             tabs[tab_name].configure(highlightbackground="#d9d9d9")
             tabs[tab_name].configure(highlightcolor="black")
-            self.Scrolledlistbox1 = ScrolledListBox(tabs[tab_name])
-            self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
+            self.Scrolledlistbox1[tab_name] = ScrolledListBox(tabs[tab_name])
+            self.Scrolledlistbox1[tab_name].place(relx=0.0, rely=0.0, relheight=1.003
                     , relwidth=1.001)
-            self.Scrolledlistbox1.configure(background="white")
-            self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
-            self.Scrolledlistbox1.configure(font="TkFixedFont")
-            self.Scrolledlistbox1.configure(foreground="black")
-            self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
-            self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
-            self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
-            self.Scrolledlistbox1.configure(selectforeground="black")
-            self.Scrolledlistbox1.configure(width=10)
-
-        #self.Scrolledlistbox1 = ScrolledListBox(tabs['Public'])
-        #self.Scrolledlistbox1.place(relx=0.0, rely=0.0, relheight=1.003
-        #        , relwidth=1.001)
-        #self.Scrolledlistbox1.configure(background="white")
-        #self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
-        #self.Scrolledlistbox1.configure(font="TkFixedFont")
-        #self.Scrolledlistbox1.configure(foreground="black")
-        #self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
-        #self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
-        #self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
-        #self.Scrolledlistbox1.configure(selectforeground="black")
-        #self.Scrolledlistbox1.configure(width=10)
+            self.Scrolledlistbox1[tab_name].configure(background="white")
+            self.Scrolledlistbox1[tab_name].configure(disabledforeground="#a3a3a3")
+            self.Scrolledlistbox1[tab_name].configure(font="TkFixedFont")
+            self.Scrolledlistbox1[tab_name].configure(foreground="black")
+            self.Scrolledlistbox1[tab_name].configure(highlightbackground="#d9d9d9")
+            self.Scrolledlistbox1[tab_name].configure(highlightcolor="#d9d9d9")
+            self.Scrolledlistbox1[tab_name].configure(selectbackground="#c4c4c4")
+            self.Scrolledlistbox1[tab_name].configure(selectforeground="black")
+            self.Scrolledlistbox1[tab_name].configure(width=10)
 
         #message_list.append("halo")
         
@@ -710,17 +699,28 @@ class AnonWinMain:
             if self.newResponse.code == 211:
                 receiving_message = self.newResponse.content["sender"] + "@" + self.newResponse.content["toGroup"]+": "+self.newResponse.content["message"]
                 message_list.append(receiving_message)
+                message_list_toGroup.append(self.newResponse.content["toGroup"])
+            
+            if self.newResponse.code == 310:
+                receiving_message = "Server: " + self.newResponse.content["message"]
+                message_list.append(receiving_message)
+                message_list_toGroup.append("all")
+
             #elif self.newResponse.code == 410:
             #    message_list.append(self.newResponse.code)
             # print(message_list)
 
     def msgReceived(self):
-        # print("asdf")
-        # print(message_list)
-        for item in message_list:
-            self.Scrolledlistbox1.insert(tk.END, item)
+        panjang = len(message_list) 
+        for i in range(panjang):
+            if message_list_toGroup[i] == "all":
+                for key in self.Scrolledlistbox1:
+                    self.Scrolledlistbox1[key].insert(tk.END, message_list[i])
+            else:
+                self.Scrolledlistbox1[message_list_toGroup[i]].insert(tk.END, message_list[i])
         message_list[:] = []
-        self.master.after(1000, self.msgReceived)
+        message_list_toGroup[:] = []
+        self.master.after(100, self.msgReceived)
 
 
     def send(self, event=None):  # event is passed by binders.
@@ -729,7 +729,7 @@ class AnonWinMain:
         my_msg.set("")
         print (msg)
         CA.sendMessage(msg)
-        message_list.append("You: " + msg)
+        # message_list.append("You: " + msg)
 
     def changeName(self):
         CA.changeName(self.Entry2.get())
