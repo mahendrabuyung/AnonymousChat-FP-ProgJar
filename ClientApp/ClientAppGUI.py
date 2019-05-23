@@ -4,6 +4,7 @@ import threading
 import Response as Res
 import Request as Req
 import queue 
+import emoji
 import os
 from functools import partial
 
@@ -30,7 +31,7 @@ txtFTP  = CA.PORT_FTP
 
 message_list = []
 message_list_toGroup = []
-tab_names = ["public", "monkas"]
+tab_names = ["public"]
 currentlyactivetab = ""
 
 class Welcome():
@@ -111,14 +112,6 @@ class Welcome():
 class Connection():
 
     def __init__(self, master):
-
-        #self.txtHost = tk.StringVar()
-        #self.txtRecv = tk.StringVar()
-        #self.txtSend = tk.StringVar()
-        #self.txtFTP = tk.StringVar()
-		
-        '''This class configures and populates the toplevel window.
-           top is the toplevel containing window.'''
         _bgcolor = '#d9d9d9'  # X11 color: 'gray85'
         _fgcolor = '#000000'  # X11 color: 'black'
         _compcolor = '#d9d9d9' # X11 color: 'gray85'
@@ -730,10 +723,8 @@ class AnonWinMain:
         self.newResponse = ''
         global currentlyactivetab 
         currentlyactivetab = "public"
-        self.AddingGroupTab("asu")
         self.msgReceived()
         self.UpdateTabs()
-        CA.addGroup("monkas")
 
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
         while True:
@@ -764,6 +755,7 @@ class AnonWinMain:
                     self.Scrolledlistbox1[key].insert(tk.END, message_list[i])
             else:
                 self.Scrolledlistbox1[message_list_toGroup[i]].insert(tk.END, message_list[i])
+
         message_list[:] = []
         message_list_toGroup[:] = []
         self.master.after(100, self.msgReceived)
@@ -771,7 +763,6 @@ class AnonWinMain:
     def AddingGroupTab(self, tab_name):
         tab = tk.Frame(self.PNotebook1)
         tab_names.append(tab_name)
-        CA.addGroup(tab_name)
         self.PNotebook1.add(tab, text=tab_name)
         self.tabs[tab_name] = tab
         self.tabs[tab_name].configure(background="#d9d9d9")
@@ -827,7 +818,8 @@ class AnonWinMain:
 
     def sendFileFTP(self):
         global currentlyactivetab
-        CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), currentlyactivetab)
+        if self.e_sendfile.get() != "":
+            CA.sendFile(self.e_sendfile.get(), self.Entry1.get(), currentlyactivetab)
 
     def fileBrowse(self):
         print('now')

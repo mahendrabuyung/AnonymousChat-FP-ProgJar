@@ -79,7 +79,9 @@ class Client(threading.Thread):
                     self.messageNOW = message
                     print("-------------------------new send------------------")
                     print(message)
-                    self.broadcast(message,file,filename)
+
+                    self.broadcast(message, toGroup=targetgroup)
+                    self.broadcast(message,file,filename, toGroup=targetgroup)
                     print("--done--")
 
                 elif newRequest.code == 201: #Permintaan Broadcast
@@ -187,7 +189,7 @@ class Client(threading.Thread):
         for friend in self.listfriends:
             if friend.is_alive():
                 if toGroup in friend.myGroup:
-                    if friend == self :
+                    if friend == self and file == None:
                         newResponse2= Res.Response(211)
                         content2 = {}
                         content2['sender'] = "YOU"
