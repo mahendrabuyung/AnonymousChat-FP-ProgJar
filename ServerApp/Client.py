@@ -195,7 +195,7 @@ class Client(threading.Thread):
                         content2['message'] = message
                         content2['toGroup'] = toGroup
                         newResponse2.content = content2
-                        self.sendMessage(newResponse.encode())
+                        self.sendMessage(newResponse2.encode())
                     else :
                         friend.sendMessage(newResponse.encode())
 

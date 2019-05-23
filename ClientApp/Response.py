@@ -4,8 +4,10 @@ import pickle
 INITIATILION_RESPONSE  = 110
 RECV_MESSAGE_RESPONSE  = 211
 RECV_FILE_RESPONSE     = 212
+RECV_SELF_RESPONSE	   = 213
 UPDATE_RESPONSE        = 310
 FEEDBACK_RESPONSE      = 410
+
 
 class Response :
     def __init__(self,code=999):
