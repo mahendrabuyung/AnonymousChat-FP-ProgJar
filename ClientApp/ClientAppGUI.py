@@ -850,6 +850,7 @@ class AnonWinMain:
     def emoji_window(self):
         t = tk.Toplevel(self.master)
         emojiFrame = tk.Frame(t)
+        t.resizable(False, False)
         listbutton = []
         for coll in range(4):
             for roww in range ((int(len(emo.label)/4))):
