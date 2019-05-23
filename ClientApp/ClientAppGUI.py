@@ -852,13 +852,14 @@ class AnonWinMain:
         emojiFrame = tk.Frame(t)
         t.resizable(False, False)
         listbutton = []
-        for coll in range(4):
-            for roww in range ((int(len(emo.label)/4))):
+        for coll in range(5):
+            for roww in range ((int(len(emo.label)/5))):
                 button = {}
-                button['val'] = rendertext(emo.label[coll*(roww-1)+roww])
-                button['text'] = emo.label[coll*(roww-1)+roww]
+                # button['val'] = rendertext(emo.label[coll*(roww-1)+roww])
+                button['val'] = rendertext(emo.label[roww*4+coll])
+                button['text'] = emo.label[roww*4+coll]
                 button['widget'] = tk.Button(emojiFrame,fg="black",text=rendertext(button['val']),command=partial(self.addtosend,button['text']))
-                button['widget'].config(font=("Courier", 50))
+                button['widget'].config(font=("Courier", 25))
                 button['widget'].grid(row=roww,column=coll)
                 listbutton.append(button)
         emojiFrame.pack(expand=True,fill="both")

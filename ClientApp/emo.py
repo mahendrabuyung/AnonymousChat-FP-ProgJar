@@ -12,5 +12,6 @@ label = [
 ":pile_of_poo:",
 ":see-no-evil_monkey:",
 ":hear-no-evil_monkey:",
-":speak-no-evil_monkey:"
+":speak-no-evil_monkey:",
+":sleeping face:"
 ]
