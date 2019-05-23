@@ -689,6 +689,7 @@ class AnonWinMain:
         self.newResponse = ''
         self.AddingGroupTab("asu")
         self.msgReceived()
+        self.UpdateTabs()
 
     def inloop(self):#<-----------------------Pesan Diterima di Ca.newREs => Cuma
         while True:
@@ -711,6 +712,7 @@ class AnonWinMain:
             # print(message_list)
 
     def msgReceived(self):
+
         panjang = len(message_list) 
         for i in range(panjang):
             if message_list_toGroup[i] == "all":
@@ -724,11 +726,13 @@ class AnonWinMain:
 
     def AddingGroupTab(self, tab_name):
         tab = tk.Frame(self.PNotebook1)
+        tab_names.append(tab_name)
         self.PNotebook1.add(tab, text=tab_name)
         self.tabs[tab_name] = tab
         self.tabs[tab_name].configure(background="#d9d9d9")
         self.tabs[tab_name].configure(highlightbackground="#d9d9d9")
         self.tabs[tab_name].configure(highlightcolor="black")
+        self.tabs[tab_name].bind()
         self.Scrolledlistbox1[tab_name] = ScrolledListBox(self.tabs[tab_name])
         self.Scrolledlistbox1[tab_name].place(relx=0.0, rely=0.0, relheight=1.003
                     , relwidth=1.001)
@@ -742,6 +746,21 @@ class AnonWinMain:
         self.Scrolledlistbox1[tab_name].configure(selectforeground="black")
         self.Scrolledlistbox1[tab_name].configure(width=10)
 
+    def UpdateTabs(self):
+
+        maudidel = []
+
+        for item in self.Scrolledlistbox1:
+            if item in tab_names:
+                continue
+            else:
+                maudidel.append(item)
+
+        for item in maudidel:
+            del self.Scrolledlistbox1[item]
+            del self.tabs[item]
+
+        self.master.after(100, self.UpdateTabs)
 
 
     def send(self, event=None):  # event is passed by binders.
@@ -755,6 +774,8 @@ class AnonWinMain:
     def changeName(self):
         CA.changeName(self.Entry2.get())
     
+
+
 # The following code is add to handle mouse events with the close icons
 # in PNotebooks widgets.
 def _button_press(event):
@@ -764,6 +785,7 @@ def _button_press(event):
         index = widget.index("@%d,%d" % (event.x, event.y))
         widget.state(['pressed'])
         widget._active = index
+        print(event.widget.tab(index, "text"))
 
 def _button_release(event):
     widget = event.widget
@@ -775,6 +797,9 @@ def _button_release(event):
     except TclError:
         pass
     if "close" in element and widget._active == index:
+        closed = event.widget.tab(index, "text")
+        tab_names.remove(closed)
+        print(tab_names)
         widget.forget(index)
         widget.event_generate("<<NotebookTabClosed>>")
 
