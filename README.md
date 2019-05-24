@@ -20,7 +20,7 @@ Enjoy the senstation of chatting without to register an account and login
 Server :
 python ServerApp.py
 ```
-
+note   : set ip adress,port ftp,send,dan recaive pada ServerApp.py secara manual
 ```
 Clients :
 python ClientAppGui.py
