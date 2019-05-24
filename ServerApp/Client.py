@@ -75,8 +75,10 @@ class Client(threading.Thread):
                     message = newRequest.content['message']
                     file = newRequest.content['file']
                     filename = newRequest.content['filename']
+                    targetgroup = newRequest.content['toGroup']
                     self.messageLast = message                
                     self.messageNOW = message
+                    
                     print("-------------------------new send------------------")
                     print(message)
 
