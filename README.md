@@ -12,3 +12,16 @@
 
 Secara garis besar akan dibuat seperti ini: https://invis.io/J7RUPK7RF6T
 \*menunggu keputusan tim untuk menambah dan menyempurnakan fitur
+
+### Menjalankan Aplikasi
+Enjoy the senstation of chatting without to register an account and login
+
+```
+Server :
+python ServerApp.py
+```
+
+```
+Clients :
+python ClientAppGui.py
+```
